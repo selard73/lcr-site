@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{TITLE} — Adoptable Dog — Last Chance Ranch of South Carolina</title>
+<meta name="description" content="Meet {TITLE}, Inmate {NUM} at Last Chance Ranch of South Carolina in Aiken, SC. {DESC}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{TITLE} — Inmate {NUM} — Last Chance Ranch">
+<meta property="og:description" content="{DESC} Apply for parole today.">
+<meta property="og:image" content="{SITE}/img/dogs/{KEY}.jpg">
+<meta property="og:url" content="{SITE}/dogs/{KEY}.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../img/seal.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;700&family=Special+Elite&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body data-root="../">
+<!--HEADER--><!--/HEADER-->
+<main id="main">
+<section class="tight">
+  <div class="wrap">
+    <p class="eyebrow" style="margin-top:8px"><a href="index.html" style="text-decoration:none">← All adoptable dogs</a></p>
+    <div class="profile">
+      <div>
+        <div class="mug"><img src="../img/dogs/{KEY}.jpg" alt="{TITLE}" onerror="this.style.visibility='hidden'"><span class="stamp lg">{STAMP}</span></div>
+        <div class="btns" style="margin-top:36px">
+          <a class="btn red" data-link="apply" href="#" target="_blank" rel="noopener">Apply to adopt {NAME}</a>
+          {PETFINDER}
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow">Inmate File · {NUM}</p>
+        <h1>{TITLE}</h1>
+        <p class="aka">{AKA}</p>
+        <p class="type" style="color:var(--red-deep);letter-spacing:.06em;text-transform:uppercase;font-size:.85rem">Rank: {RANK}</p>
+        {PAIRNOTE}
+        <ul class="facts">{FACTS}</ul>
+        <h3>Behavior report</h3>
+        <ul class="paws">{REPORT}</ul>
+        <h3>Warden's notes</h3>
+        <div class="notes">{NOTES}</div>
+        <div class="conditions"><b>Conditions of parole</b>{CONDITIONS}</div>
+        {ACCORDIONS}
+        <div class="btns" style="margin-top:28px">
+          <a class="btn red" data-link="apply" href="#" target="_blank" rel="noopener">Apply for parole</a>
+          <a class="btn ghost" href="../adopt.html">Adoption FAQ</a>
+          <a class="btn ghost" href="../foster.html">Foster {NAME}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="tight deep">
+  <div class="wrap">
+    <h2 style="font-size:1.4rem">More inmates awaiting parole</h2>
+    <div class="morestrip" id="morestrip" data-skip="{KEY}"></div>
+    <a class="btn ghost sm" href="index.html">See all dogs</a>
+  </div>
+</section>
+</main>
+<!--FOOTER--><!--/FOOTER-->
+</body>
+</html>
