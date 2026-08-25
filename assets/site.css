@@ -6,6 +6,9 @@
   --paper:#EAE0C8; --paper-deep:#D9CDAF; --paper-light:#F3ECDA; --paper-white:#FBF7EC;
   --ink:#1B1A17; --ink-soft:#3B3830; --muted:#6B655A;
   --red:#B8231F; --red-deep:#8E1814; --red-stamp:#C4302B;
+  /* A whisper of the rescue's dark green: used only for the dark bands, which
+     still read as near-black, plus the thin rules that edge them. */
+  --green-dark:#16231A; --green:#434B35;
   --wood:#7A5230; --wood-dark:#4E3218;
   --wall:#B9B7B0; --wall-line:#7E7C76;
   --disp:'Anton','Oswald',Impact,sans-serif;
@@ -48,7 +51,7 @@ p{margin:0 0 1em}
   padding:13px 22px; border:3px solid var(--ink); background:var(--ink); color:#fff; text-decoration:none; line-height:1;
   transition:transform .12s, background .15s, color .15s; cursor:pointer}
 .btn:hover{background:var(--red); border-color:var(--red); color:#fff; transform:translateY(-2px)}
-.btn.red{background:var(--red-stamp); border-color:var(--red-stamp)}
+.btn.red{background:var(--red-stamp); border-color:var(--red-stamp); box-shadow:1px 1px 0 var(--green)}
 .btn.red:hover{background:var(--red-deep); border-color:var(--red-deep)}
 .btn.ghost{background:transparent; color:var(--ink)}
 .btn.ghost:hover{background:var(--ink); color:#fff; border-color:var(--ink)}
@@ -67,7 +70,7 @@ p{margin:0 0 1em}
 .stamp.ink{color:var(--ink); border-color:var(--ink)}
 
 /* ---------- header / nav ---------- */
-.site-header{background:var(--ink); color:var(--paper-light); position:sticky; top:0; z-index:50; border-bottom:4px solid var(--red)}
+.site-header{background:var(--ink); color:var(--paper-light); position:sticky; top:0; z-index:50; border-bottom:4px solid var(--red); box-shadow:0 1px 0 var(--green)}
 .site-header .wrap{display:flex; align-items:center; justify-content:space-between; gap:20px; min-height:74px}
 .brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--paper-light)}
 .brand img{width:52px; height:52px; border-radius:50%; border:2px solid var(--paper-light); background:#fff}
@@ -76,7 +79,7 @@ p{margin:0 0 1em}
 .nav{display:flex; gap:4px; align-items:center; margin:0; padding:0; list-style:none}
 .nav a{display:block; padding:10px 12px; color:var(--paper-light); text-decoration:none; font-family:var(--cond); font-weight:500; text-transform:uppercase; letter-spacing:.1em; font-size:.9rem; border-bottom:3px solid transparent}
 .nav a:hover,.nav a[aria-current]{border-bottom-color:var(--red); color:#fff}
-.nav a.cta{background:var(--red-stamp); border:0; margin-left:6px; padding:10px 14px}
+.nav a.cta{background:var(--red-stamp); border:0; margin-left:6px; padding:10px 14px; box-shadow:1px 1px 0 var(--green)}
 .nav a.cta:hover{background:var(--red-deep)}
 .navtoggle{display:none; background:none; border:2px solid var(--paper-light); color:var(--paper-light); font-family:var(--cond); text-transform:uppercase; letter-spacing:.1em; padding:8px 12px; cursor:pointer}
 @media (max-width:900px){
@@ -107,7 +110,7 @@ section.tight{padding:40px 0}
 .hero h1 em{font-style:normal; color:var(--red-stamp)}
 .hero .lead{max-width:52ch; color:var(--paper-deep)}
 .hero-img{position:relative; justify-self:center}
-.hero-img img{width:min(100%,420px); aspect-ratio:3/4; object-fit:cover; border:6px solid var(--paper-light); box-shadow:0 20px 50px rgba(0,0,0,.5); transform:rotate(2deg)}
+.hero-img img{width:min(100%,420px); aspect-ratio:3/4; object-fit:cover; border:6px solid var(--paper-light); box-shadow:0 0 0 1px var(--green), 0 20px 50px rgba(0,0,0,.5); transform:rotate(2deg)}
 .hero-img .stamp{position:absolute; right:14px; top:22px; transform:rotate(9deg); background:var(--paper-light); font-size:1.25rem}
 .hero-img .tag{position:absolute; left:-14px; bottom:26px; background:var(--paper-light); color:var(--ink); border:3px solid var(--ink); font-family:var(--cond); font-weight:700; text-transform:uppercase; letter-spacing:.06em; padding:8px 12px; line-height:1.15; font-size:.85rem; transform:rotate(-3deg); box-shadow:4px 4px 0 rgba(0,0,0,.4)}
 .hero-img .tag b{display:block; font-family:var(--disp); font-weight:400; font-size:1.2rem}
@@ -136,7 +139,7 @@ section.tight{padding:40px 0}
 .dogs{display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:28px; margin-top:32px}
 .dog{background:var(--paper-light); border:3px solid var(--ink); text-decoration:none; color:var(--ink); display:flex; flex-direction:column; position:relative;
   transition:transform .15s, box-shadow .15s; box-shadow:5px 5px 0 var(--ink)}
-.dog:hover{transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--red-stamp); color:var(--ink)}
+.dog:hover{transform:translate(-2px,-2px); box-shadow:8px 8px 0 var(--ink); color:var(--ink)}
 .dog .pic{aspect-ratio:1/1; overflow:hidden; background:var(--wall);
   background-image:repeating-linear-gradient(0deg, transparent 0 22px, var(--wall-line) 22px 23px); border-bottom:3px solid var(--ink); position:relative}
 .dog .pic img{width:100%; height:100%; object-fit:cover; object-position:center top; position:relative; z-index:1}
@@ -149,6 +152,9 @@ section.tight{padding:40px 0}
 .dog .meta{font-family:var(--type); font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:8px}
 .dog .blurb{color:var(--ink-soft); flex:1; font-size:.98rem; margin-bottom:14px}
 .dog .btn{align-self:flex-start}
+/* The whole card is the link, so the inner 'Meet X' chip must not flash red
+   on its own hover — the card's lift is the only feedback we want. */
+.dog .btn:hover{background:var(--ink); border-color:var(--ink); color:#fff; transform:none}
 .dog.paired .pic{background:var(--paper-deep)}
 
 /* ---------- dog profile ---------- */
@@ -224,7 +230,7 @@ details.acc .in{padding:0 4px 18px; color:var(--ink-soft)}
 .embed iframe{width:100%; min-height:2300px; border:0; display:block}
 
 /* ---------- footer ---------- */
-.site-footer{background:var(--ink); color:var(--paper-deep); padding:48px 0 28px; border-top:6px solid var(--red)}
+.site-footer{background:var(--ink); color:var(--paper-deep); padding:48px 0 28px; border-top:6px solid var(--red); box-shadow:0 -1px 0 var(--green)}
 .site-footer .cols{display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:36px}
 .site-footer h4{color:var(--paper-light); font-size:.9rem; letter-spacing:.14em; margin-bottom:.8em}
 .site-footer a{color:var(--paper-light); text-decoration:none}
@@ -239,3 +245,24 @@ details.acc .in{padding:0 4px 18px; color:var(--ink-soft)}
 @media (max-width:820px){.site-footer .cols{grid-template-columns:1fr}}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+
+/* ---------- reviews ticker (home) ---------- */
+.ticker{position:relative; overflow:hidden; margin-top:52px;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 90px,#000 calc(100% - 90px),transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 90px,#000 calc(100% - 90px),transparent)}
+.ticker-track{display:flex; align-items:stretch; width:max-content; animation:tick 70s linear infinite}
+/* Quiet pull-quotes: a hairline rule instead of a card, so the row reads as one
+   continuous strip rather than a train of boxes. */
+.rev{flex:0 0 auto; width:330px; margin:0; padding:4px 30px; border-left:2px solid rgba(27,26,23,.16);
+  display:flex; flex-direction:column; justify-content:center}
+.rev p{font-size:1rem; line-height:1.55; font-style:italic; color:var(--ink-soft); margin:0 0 10px}
+.rev .who{font-family:var(--type); font-size:.72rem; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--muted); font-style:normal; margin:0}
+.rev .who::before{content:"— "}
+@keyframes tick{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.ticker-track{animation:none}}
+
+/* roster loading / unreachable notice */
+.loading{grid-column:1/-1; text-align:center; color:var(--muted); font-family:var(--type);
+  font-size:.9rem; letter-spacing:.04em; padding:38px 10px; margin:0}
+.loading a{color:var(--red-deep)}

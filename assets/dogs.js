@@ -128,6 +128,8 @@ window.LCR = {
   youtube: "https://www.youtube.com/@LastChanceRanchofSC",
   petfinder: "https://www.petfinder.com/member/us/sc/aiken/last-chance-ranch-of-south-carolina-sc10004/",
   quiz: "https://pawtner-in-crime.onrender.com",
+  // The rescue's own animal records — the live source for adoptable dogs.
+  dogsFeed: "https://lcr-animal-records.onrender.com/api/public/dogs",
   phone: "(803) 479-8408",
   email: "lastchanceranchofsc@gmail.com",
   city: "Aiken, SC"

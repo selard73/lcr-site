@@ -39,17 +39,58 @@
       <p class="blurb">${esc(d.blurb || "")}</p><span class="btn sm">Meet ${esc(d.name)}</span></div></a>`;
   };
 
-  /* grid on Find a Dog */
+  /* A card built from the records app's feed. Those dogs live in the app, so the
+     card links there rather than to a static profile page. */
+  const liveCard = function(d){
+    const num  = d.inmate_number ? `<span class="num">Inmate #${esc(d.inmate_number)}</span>` : "";
+    const flag = d.status_label && d.status_label !== "Available"
+      ? `<span class="stamp sm flag">${esc(d.status_label)}</span>` : "";
+    const pic  = d.photo
+      ? `<img src="${esc(d.photo.url)}" alt="${esc(d.name)}" loading="lazy" onerror="this.remove()">` : "";
+    const vid  = d.has_video ? `<p class="blurb">▶ Yard-time footage on file</p>` : "";
+    return `<a class="dog" href="${esc(d.url)}">
+      <div class="pic"><span class="ph">?</span>${pic}${num}${flag}</div>
+      <div class="body"><h3>${esc(d.name)}</h3><div class="meta">${esc(d.summary || "")}</div>
+      ${vid}<span class="btn sm">Meet ${esc(d.name)}</span></div></a>`;
+  };
+
+  /* The animal records are the only roster we show. Never seed these from the
+     built-in list: it goes stale the moment a dog is adopted, and listing an
+     adopted dog wastes an adopter's time and the rescue's. So we wait, and if
+     the records can't be reached we say so rather than inventing a roster.
+     (The app sleeps between visits, so a cold start can take a few seconds.) */
   const grid = $("#doggrid");
-  if (grid) {
-    const dogs = visible();
-    grid.innerHTML = dogs.map(dogCard).join("");
-    const c = $("#dogcount"); if (c) c.textContent = dogs.length;
+  const prev = $("#dogpreview");
+
+  if (grid || prev) {
+    const waiting = `<p class="loading">Fetching the current roster from the Ranch…</p>`;
+    if (grid) grid.innerHTML = waiting;
+    if (prev) prev.innerHTML = waiting;
+
+    fetch(LCR.dogsFeed, { mode: "cors" })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => {
+        const dogs = (data.dogs || []).filter(d => d.photo);
+        if (!dogs.length) throw new Error("empty");
+        if (grid) {
+          grid.innerHTML = dogs.map(liveCard).join("");
+          const c = $("#dogcount"); if (c) c.textContent = dogs.length;
+        }
+        if (prev) prev.innerHTML = dogs.slice(0, +prev.dataset.n || 4).map(liveCard).join("");
+      })
+      .catch(() => {
+        const fb = (window.LCR && LCR.facebook) || "#";
+        const msg = `<p class="loading">We can't reach the kennel roster right now.
+          <a href="${LCR.dogsPage || LCR.dogsFeed}">See the dogs here</a> or
+          <a href="${fb}" target="_blank" rel="noopener">message us on Facebook</a>.</p>`;
+        if (grid) { grid.innerHTML = msg; const c = $("#dogcount"); if (c) c.textContent = "—"; }
+        if (prev) prev.innerHTML = msg;
+      });
   }
 
-  /* home preview: first N dogs */
-  const prev = $("#dogpreview");
-  if (prev) prev.innerHTML = visible().slice(0, +prev.dataset.n || 4).map(dogCard).join("");
+  /* reviews ticker: duplicate the run so the -50% loop has no seam */
+  const rev = $("#reviews");
+  if (rev) rev.innerHTML += rev.innerHTML;
 
   /* "more inmates" strip on profile pages */
   const strip = $("#morestrip");
