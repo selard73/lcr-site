@@ -8,7 +8,7 @@ Run after editing assets/dogs.js or _partials/*.html:
 import json, re, pathlib, html
 
 ROOT = pathlib.Path(__file__).parent
-SITE = "https://lastchanceranchsc.onrender.com"   # change after deploy / custom domain
+SITE = "https://www.lastchanceranchsc.com"   # the rescue's domain (Wix DNS -> Render)
 
 # ---- read dog data out of dogs.js (evaluate with node so the JS stays the single source of truth) ----
 import subprocess
