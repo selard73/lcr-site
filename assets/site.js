@@ -1,3 +1,43 @@
+/* Google Analytics (GA4). Inert until GA_ID is a real measurement ID, so this
+   file is safe to ship before the property exists.
+   We track intent, not just pageviews: an adoption or foster application, a
+   donation tap, a phone/email click. Those are the numbers that tell the Ranch
+   whether the site is doing its job. Mirrors the quiz's event scheme. */
+(function () {
+  var GA_ID = "G-Z8G3NMP20Q";   // lastchanceranchsc.com stream, created 2026-09-01
+  if (!/^G-[A-Z0-9]{6,}$/.test(GA_ID)) return;
+
+  var s = document.createElement("script");
+  s.async = true;
+  s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+  document.head.appendChild(s);
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function () { dataLayer.push(arguments); };
+  gtag("js", new Date());
+  gtag("config", GA_ID);
+
+  /* The outbound links are stamped in from window.LCR (data-link/-mail/-tel), and
+     the dog cards are painted in later from the records feed — so listen once on
+     the document rather than binding per element. */
+  var INTENT = { apply: "apply_click", foster: "foster_click", donate: "donate_click", quiz: "quiz_click" };
+  var SOCIAL = { facebook: 1, tiktok: 1, youtube: 1, petfinder: 1 };
+
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest("a");
+    if (!a) return;
+    var key = a.dataset.link;
+    if (key && INTENT[key]) return gtag("event", INTENT[key], { link_url: a.href });
+    if (key && SOCIAL[key]) return gtag("event", "social_click", { network: key });
+    if (a.hasAttribute("data-tel")  || a.protocol === "tel:")    return gtag("event", "phone_click");
+    if (a.hasAttribute("data-mail") || a.protocol === "mailto:") return gtag("event", "email_click");
+    var dog = a.closest(".dog");
+    if (dog) {
+      var h = dog.querySelector("h3");
+      gtag("event", "dog_click", { dog_name: h ? h.textContent.trim() : "" });
+    }
+  }, true);
+})();
+
 /* Shared behavior: nav toggle, link fill-in, dog grid, "more dogs" strip. */
 (function(){
   const $ = (s, r=document) => r.querySelector(s);
