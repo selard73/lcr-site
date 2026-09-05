@@ -33,3 +33,8 @@ Everything below is either a guess written in their voice, or a known gap. Nothi
 - Events (they do Krispy Kreme etc.) — a simple "Upcoming" section on Donate or Home
 - Custom domain (e.g. lastchanceranchsc.org) — Cloudflare/registrar
 - Google Analytics or Plausible
+
+## Sponsor an Inmate page (added 2026-09-05)
+- [ ] Confirm suggested tiers with LCR: $10 snacks / $25 room & board / $50 full support (site says "suggested," any amount works)
+- [ ] Confirm LCR commits to sending sponsor update reports (frequency promise on page is vague on purpose: "periodic")
+- [ ] Upgrade signup from prefilled email → JotForm once someone creates the form (page structured to swap in)

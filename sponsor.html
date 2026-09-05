@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sponsor an Inmate — Last Chance Ranch of South Carolina</title>
+<meta name="description" content="Sponsor a dog at Last Chance Ranch of South Carolina. Pick your inmate, cover their room and board, and get the Warden's update reports on your dog.">
+<meta property="og:title" content="Sponsor an Inmate — Last Chance Ranch of South Carolina">
+<meta property="og:description" content="Pick your inmate, put them on your payroll, and get the Warden's update reports. Every sponsored dog is somebody's whole heart on layaway.">
+<meta property="og:image" content="https://lastchanceranchsc.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Last Chance Ranch of South Carolina — Department of Pawctions">
+<link rel="icon" href="img/seal.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;700&family=Special+Elite&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=15">
+<style>
+/* page-scoped: dog picker + report styling (no site.css bump needed) */
+.pick .dog{cursor:pointer; user-select:none}
+.pick .dog .btn{pointer-events:none}
+.pick .dog.sel{box-shadow:8px 8px 0 var(--red-stamp); transform:translate(-2px,-2px)}
+.pick .dog.sel .btn{background:var(--red-stamp); border-color:var(--red-stamp); color:#fff}
+.tiers{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:18px; margin:26px 0 8px}
+.tier{border:3px solid var(--ink); background:var(--paper-light); padding:20px 18px; text-align:center; box-shadow:5px 5px 0 var(--ink)}
+.tier b{display:block; font-family:var(--disp); font-weight:400; font-size:2rem; margin-bottom:2px}
+.tier h3{font-size:1.05rem; margin:0 0 6px}
+.tier p{font-size:.92rem; color:var(--ink-soft); margin:0}
+.report{background:var(--paper-white); border:3px solid var(--ink); box-shadow:8px 8px 0 var(--red-stamp); padding:28px 30px; font-family:var(--type); max-width:640px; margin:0 auto; position:relative}
+.report .rh{text-align:center; border-bottom:3px double var(--ink); padding-bottom:12px; margin-bottom:16px}
+.report .rh b{font-family:var(--disp); font-weight:400; font-size:1.5rem; letter-spacing:.06em; text-transform:uppercase; display:block}
+.report .rh small{letter-spacing:.14em; text-transform:uppercase; color:var(--muted)}
+.report dl{margin:0}
+.report dt{font-weight:700; text-transform:uppercase; letter-spacing:.1em; font-size:.78rem; color:var(--muted); margin-top:14px}
+.report dd{margin:2px 0 0}
+.report .stamp{position:absolute; right:18px; top:14px; font-size:.95rem}
+.step-cta{margin-top:14px}
+#pickedname{color:var(--red-deep)}
+</style>
+</head>
+<body data-root="">
+<!--HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/seal.jpg" alt=""><span><b>Last Chance Ranch</b><small>of South Carolina · Aiken, SC</small></span></a>
+    <button class="navtoggle" aria-expanded="false" aria-controls="nav">Menu</button>
+    <ul class="nav" id="nav">
+      <li><a href="dogs/index.html">Find a Dog</a></li>
+      <li><a href="adopt.html">Adopt</a></li>
+      <li><a href="foster.html">Foster</a></li>
+      <li><a href="volunteer.html">Volunteer</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="cta" href="donate.html">Donate</a></li>
+    </ul>
+  </div>
+</header>
+
+<!--/HEADER-->
+<main id="main">
+
+<section class="dark pageh">
+  <div class="wrap center">
+    <p class="eyebrow">Sponsor an inmate</p>
+    <h1>Put a dog on your payroll</h1>
+    <p class="lead narrow">Can't adopt right now? Sponsor an inmate instead. Your monthly gift covers one dog's food, meds, and vet care while they wait for parole — and the Warden keeps you posted on how your dog is doing.</p>
+    <div class="btns center" style="margin-top:22px">
+      <a class="btn red" href="#pick">Pick your inmate</a>
+    </div>
+  </div>
+</section>
+
+<section class="tight" id="pick">
+  <div class="wrap">
+    <div class="center">
+      <p class="eyebrow">Step one</p>
+      <h2>Pick your inmate</h2>
+      <div class="rule"></div>
+      <p class="narrow" style="margin:0 auto;color:var(--ink-soft)">Tap a dog to choose them. Long-timers and sanctuary residents need sponsors most — they're in it for the long haul.</p>
+    </div>
+    <div class="dogs pick" id="sponsorpick"><p class="loading">Fetching the current roster from the Ranch…</p></div>
+  </div>
+</section>
+
+<section class="light tight">
+  <div class="wrap">
+    <div class="center">
+      <p class="eyebrow">Step two</p>
+      <h2>Set up your support</h2>
+      <div class="rule"></div>
+      <p class="narrow" style="margin:0 auto;color:var(--ink-soft)">Suggested levels — any amount helps, one-time or monthly. In Cash App, set it to repeat monthly and put <strong>SPONSOR + your dog's name</strong> in the note so we know who's on your payroll.</p>
+    </div>
+    <div class="tiers">
+      <div class="tier"><b>$10</b><h3>Commissary snacks</h3><p>Treats, chews, and the occasional contraband tennis ball.</p></div>
+      <div class="tier"><b>$25</b><h3>Room &amp; board</h3><p>A month of food and heartworm &amp; flea prevention.</p></div>
+      <div class="tier"><b>$50</b><h3>Full sentence support</h3><p>Food plus a real dent in vet care for the dogs who wait longest.</p></div>
+      <div class="tier"><b>Any</b><h3>Care package</h3><p>One-time gift toward whatever your dog needs most.</p></div>
+    </div>
+    <div class="btns center step-cta">
+      <a class="btn red" data-link="donate" href="#" target="_blank" rel="noopener">Open Cash App</a>
+    </div>
+  </div>
+</section>
+
+<section class="tight">
+  <div class="wrap">
+    <div class="center">
+      <p class="eyebrow">Step three</p>
+      <h2>Get on the visitor list</h2>
+      <div class="rule"></div>
+      <p class="narrow" style="margin:0 auto 18px;color:var(--ink-soft)">Email us so we know where to send your dog's update reports. The button below writes the email for you<span id="pickednote" hidden> — for <strong id="pickedname"></strong></span>.</p>
+    </div>
+    <div class="btns center">
+      <a class="btn red" id="enroll" href="#">Enroll for update reports</a>
+    </div>
+  </div>
+</section>
+
+<section class="deep">
+  <div class="wrap">
+    <div class="center">
+      <p class="eyebrow">What you'll get</p>
+      <h2>The Warden's update report</h2>
+      <div class="rule"></div>
+      <p class="narrow" style="margin:0 auto 28px;color:var(--ink-soft)">Sponsors get periodic reports from the Warden's office on how their inmate is serving their time. A sample from the files:</p>
+    </div>
+    <div class="report">
+      <span class="stamp sm">Good boy</span>
+      <div class="rh"><small>Last Chance Ranch · Department of Pawctions</small><b>Inmate Update Report</b><small>Case No. 34 · Subject: "Blue"</small></div>
+      <dl>
+        <dt>Behavior report</dt>
+        <dd>Subject was observed completing 47 laps of the yard for no documented reason. When questioned, subject wagged. Investigation closed.</dd>
+        <dt>Commissary log</dt>
+        <dd>Your funds were disbursed as follows: one (1) bag of kibble, one (1) heartworm preventative, one (1) tennis ball — since confiscated from under his bed, alongside the three we did not purchase.</dd>
+        <dt>Medical record</dt>
+        <dd>Clean bill of health. The vet described him as "a lot," which we are entering into the file as a compliment.</dd>
+        <dt>Parole status</dt>
+        <dd>Still eligible. Still waiting. Still absolutely certain today is the day. Your support keeps his tail at regulation wag while he waits.</dd>
+      </dl>
+    </div>
+    <p class="center" style="margin-top:26px;color:var(--muted);font-family:var(--type);font-size:.85rem">Reports are written by actual humans about your actual dog. Frequency varies with rescue chaos.</p>
+  </div>
+</section>
+
+<section class="light tight">
+  <div class="wrap two">
+    <div>
+      <h3>Rather adopt or foster?</h3>
+      <p>Sponsorship is wonderful. A couch is better. If your situation changes, your sponsored dog would love to discuss a transfer to your custody.</p>
+      <div class="btns"><a class="btn ghost" href="adopt.html">How to adopt</a><a class="btn ghost" href="foster.html">Foster instead</a></div>
+    </div>
+    <div>
+      <h3>Questions?</h3>
+      <p>Message the Warden's office and we'll get you sorted.</p>
+      <div class="btns"><a class="btn ghost" data-link="facebook" href="#" target="_blank" rel="noopener">Facebook</a><a class="btn ghost" data-mail href="#">Email us</a></div>
+    </div>
+  </div>
+</section>
+
+</main>
+<!--FOOTER-->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><img src="img/seal.jpg" alt=""><span><b>Last Chance Ranch</b><small>Department of Pawctions</small></span></a>
+        <p>A small no-kill dog &amp; cat sanctuary in Aiken, South Carolina. Every animal here is serving time for circumstances beyond their control — and every one of them is eligible for parole.</p>
+        <div class="social">
+          <a data-link="facebook" href="#" target="_blank" rel="noopener">Facebook</a>
+          <a data-link="tiktok" href="#" target="_blank" rel="noopener">TikTok</a>
+          <a data-link="youtube" href="#" target="_blank" rel="noopener">YouTube</a>
+          <a data-link="petfinder" href="#" target="_blank" rel="noopener">Petfinder</a>
+        </div>
+      </div>
+      <div>
+        <h4>Get involved</h4>
+        <ul>
+          <li><a href="dogs/index.html">Adoptable dogs</a></li>
+          <li><a href="adopt.html">How to adopt</a></li>
+          <li><a href="foster.html">Foster a dog</a></li>
+          <li><a href="volunteer.html">Volunteer</a></li>
+          <li><a href="donate.html">Donate · Post Bail</a></li>
+          <li><a href="sponsor.html">Sponsor an inmate</a></li>
+          <li><a data-link="quiz" href="#" target="_blank" rel="noopener">Who's your pawtner in crime? (quiz)</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact the Warden</h4>
+        <ul>
+          <li><a data-tel href="#"><span data-text="phone"></span></a></li>
+          <li><a data-mail href="#"></a></li>
+          <li>Aiken, South Carolina</li>
+          <li><a href="about.html#contact">Visits by appointment</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fine"><span>© <span id="yr"></span> Last Chance Ranch of South Carolina, a registered 501(c)(3) nonprofit. All inmates innocent.</span><span>Site by <a href="https://shannonlard.com" target="_blank" rel="noopener">Shannon L.</a></span></div>
+  </div>
+</footer>
+<script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+<script src="assets/dogs.js?v=10"></script>
+<script src="assets/site.js?v=10"></script>
+
+<!--/FOOTER-->
+<script>
+/* Dog picker: same live feed as the homepage; cards select instead of navigate. */
+(function(){
+  const box = document.getElementById("sponsorpick");
+  const enroll = document.getElementById("enroll");
+  const esc = s => String(s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  let picked = null;
+
+  function mailto(){
+    const dog = picked ? `${picked.name}${picked.num ? " (Inmate #" + picked.num + ")" : ""}` : "(tell us which dog!)";
+    const su = encodeURIComponent(`Sponsorship — ${picked ? picked.name : "new sponsor"}`);
+    const bo = encodeURIComponent(
+`Warden,
+
+I'd like to sponsor ${dog}.
+
+My name:
+Monthly amount (or one-time):
+Cash App name the payment will come from:
+
+Please add me to the visitor list for update reports.`);
+    enroll.href = `mailto:${(window.LCR && LCR.email) || ""}?subject=${su}&body=${bo}`;
+  }
+  mailto();
+
+  function card(d){
+    return `<div class="dog" role="button" tabindex="0" aria-pressed="false" data-name="${esc(d.name)}" data-num="${esc(d.inmate_number||"")}">
+      <div class="pic"><span class="ph">?</span>${d.photo ? `<img src="${esc(d.photo.url)}" alt="${esc(d.name)}" loading="lazy" onerror="this.remove()">` : ""}${d.inmate_number ? `<span class="num">Inmate #${esc(d.inmate_number)}</span>` : ""}</div>
+      <div class="body"><h3>${esc(d.name)}</h3><div class="meta">${esc(d.summary||"")}</div>
+      <span class="btn sm">Sponsor ${esc(d.name)}</span></div></div>`;
+  }
+
+  function select(el){
+    box.querySelectorAll(".dog").forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-pressed","false"); });
+    el.classList.add("sel"); el.setAttribute("aria-pressed","true");
+    picked = { name: el.dataset.name, num: el.dataset.num };
+    const note = document.getElementById("pickednote");
+    document.getElementById("pickedname").textContent = picked.name;
+    note.hidden = false;
+    el.querySelector(".btn").textContent = "Sponsoring " + picked.name + " ✓";
+    mailto();
+    if (typeof gtag === "function") gtag("event", "sponsor_pick", { dog_name: picked.name });
+  }
+
+  box.addEventListener("click", e => { const el = e.target.closest(".dog"); if (el) select(el); });
+  box.addEventListener("keydown", e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const el = e.target.closest(".dog"); if (el) { e.preventDefault(); select(el); }
+  });
+
+  fetch(LCR.dogsFeed, { mode: "cors" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(data => {
+      const dogs = (data.dogs || []).filter(d => d.photo);
+      if (!dogs.length) throw new Error("empty");
+      box.innerHTML = dogs.map(card).join("");
+    })
+    .catch(() => {
+      box.innerHTML = `<p class="loading">We can't reach the kennel roster right now — but you can still sponsor!
+        <a href="${(window.LCR && LCR.facebook) || "#"}" target="_blank" rel="noopener">Message us on Facebook</a> and we'll match you with a dog who needs it most.</p>`;
+    });
+})();
+</script>
+</body>
+</html>
