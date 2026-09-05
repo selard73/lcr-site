@@ -50,6 +50,13 @@
 .rap .mug{border:4px solid var(--ink); box-shadow:7px 7px 0 var(--red-stamp); position:relative; background:var(--wall)}
 .rap .mug img{width:100%; aspect-ratio:3/4; object-fit:cover; object-position:center top; display:block}
 .rap .mug .stamp{position:absolute; left:50%; bottom:10px; transform:translateX(-50%) rotate(-6deg); background:var(--paper-light); font-size:.8rem; white-space:nowrap}
+.rap .mug .cnav{position:absolute; top:50%; transform:translateY(-50%); background:var(--ink); color:var(--paper-light); border:0; width:32px; height:44px; font-family:var(--disp); font-size:1.1rem; cursor:pointer; opacity:.85}
+.rap .mug .cnav:hover{background:var(--red-stamp); opacity:1}
+.rap .mug .cnav.prev{left:0}
+.rap .mug .cnav.next{right:0}
+.rap .mug .cdots{position:absolute; left:0; right:0; top:8px; display:flex; justify-content:center; gap:6px}
+.rap .mug .cdots i{width:9px; height:9px; border-radius:50%; background:var(--paper-light); border:2px solid var(--ink); opacity:.55}
+.rap .mug .cdots i.on{background:var(--red-stamp); opacity:1}
 .rap .sheet{font-family:var(--type)}
 .rap .sheet h3{font-family:var(--disp); font-weight:400; font-size:1.7rem; letter-spacing:.04em; margin:0}
 .rap .sheet .rnum{font-size:.8rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
@@ -201,7 +208,11 @@ body.modal-open{overflow:hidden}
     <div class="mstep" id="m1b">
       <div class="mh"><p class="eyebrow">Wanted for a better life</p></div>
       <div class="rap">
-        <div class="mug"><img id="rapimg" src="" alt=""><span class="stamp sm">Parole pending</span></div>
+        <div class="mug"><img id="rapimg" src="" alt="">
+          <button class="cnav prev" id="cprev" aria-label="Previous photo" hidden>‹</button>
+          <button class="cnav next" id="cnext" aria-label="Next photo" hidden>›</button>
+          <div class="cdots" id="cdots" aria-hidden="true"></div>
+          <span class="stamp sm">Parole pending</span></div>
         <div class="sheet">
           <h3 id="rapname"></h3>
           <p class="rnum" id="rapnum"></p>
@@ -390,8 +401,11 @@ body.modal-open{overflow:hidden}
   }
   function setDog(d){
     state.dog = d.name; state.num = d.inmate_number || ""; state.img = d.photo ? d.photo.url : ""; state.sum = d.summary || "";
+    /* gallery: the feed sends photos[] (primary first); older feeds only photo */
+    gal = (d.photos && d.photos.length ? d.photos : (d.photo ? [d.photo] : [])).map(p => p.url);
+    galAt(0);
     const r = rapFor(d);
-    $id("rapimg").src = state.img; $id("rapimg").alt = d.name;
+    $id("rapimg").alt = d.name;
     $id("rapname").textContent = d.name;
     $id("rapnum").textContent = (state.num ? "Inmate #" + state.num + " · " : "") + "Last Chance Ranch Correctional Facility";
     $id("rapdesc").textContent = state.sum || "Refused to be measured. Wagged instead.";
@@ -400,6 +414,27 @@ body.modal-open{overflow:hidden}
     fill();
     if (typeof gtag==="function") gtag("event","sponsor_pick",{dog_name:d.name});
   }
+
+  /* rap-sheet photo carousel */
+  let gal = [], gi = 0;
+  function galAt(i){
+    if (!gal.length) return;
+    gi = (i + gal.length) % gal.length;
+    $id("rapimg").src = gal[gi];
+    const many = gal.length > 1;
+    $id("cprev").hidden = $id("cnext").hidden = !many;
+    $id("cdots").innerHTML = many ? gal.map((_,k) => `<i class="${k===gi?"on":""}"></i>`).join("") : "";
+  }
+  $id("cprev").addEventListener("click", () => galAt(gi-1));
+  $id("cnext").addEventListener("click", () => galAt(gi+1));
+  let tx = null;
+  const mugEl = document.querySelector(".rap .mug");
+  mugEl.addEventListener("touchstart", e => { tx = e.touches[0].clientX; }, {passive:true});
+  mugEl.addEventListener("touchend", e => {
+    if (tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx; tx = null;
+    if (Math.abs(dx) > 40) galAt(gi + (dx < 0 ? 1 : -1));
+  }, {passive:true});
 
   /* entry points */
   $id("startbtn").addEventListener("click", () => openModal("pick"));
