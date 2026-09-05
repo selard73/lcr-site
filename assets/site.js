@@ -145,27 +145,69 @@
         wrap.setAttribute("role", "dialog");
         wrap.setAttribute("aria-modal", "true");
         wrap.setAttribute("aria-label", a.heading);
-        /* media: a video link wins over a flyer image; either may be absent */
-        let media = "";
-        if (a.video && a.video.embed_url) {
-          const eu = a.video.embed_url.replace(/autoplay=1/, "autoplay=0");
-          media = `<div class="promo-video ${a.video.orientation === "portrait" ? "tall" : ""}"><iframe src="${esc(eu)}" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
-        } else if (a.image) {
-          media = `<img class="promo-img" src="${esc(a.image)}" alt="${esc(a.heading || "Announcement")}">`;
-        }
-        wrap.innerHTML = `<div class="promo-card ${media ? "has-media" : ""}">
+        /* Flyer mode: the image IS the modal — big and glossy, minimal chrome.
+           Sound (voice + music bed) starts on tap; browsers forbid audio autoplay. */
+        const hasSound = !!(a.voice || a.music);
+        let inner;
+        if (a.image) {
+          inner = `<div class="promo-ad">
+            <button class="promo-x" aria-label="Close">✕</button>
+            <img class="promo-poster" src="${esc(a.image)}" alt="${esc(a.heading || "Announcement from Last Chance Ranch")}">
+            ${hasSound ? `<button class="promo-play"><span>▶</span> Hear the announcement</button>` : ""}
+            <div class="promo-bar">
+              ${a.link_url ? `<a class="btn red" href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_label || "Learn more")}</a>` : ""}
+              <button class="btn ${a.link_url ? "ghost" : "red"} promo-later">${a.link_url ? "Maybe later" : "Got it"}</button>
+            </div>
+          </div>`;
+        } else {
+          let media = "";
+          if (a.video && a.video.embed_url) {
+            const eu = a.video.embed_url.replace(/autoplay=1/, "autoplay=0");
+            media = `<div class="promo-video ${a.video.orientation === "portrait" ? "tall" : ""}"><iframe src="${esc(eu)}" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
+          }
+          inner = `<div class="promo-card ${media ? "has-media" : ""}">
             <button class="promo-x" aria-label="Close">✕</button>
             ${media}
             <p class="eyebrow">From the Warden's office</p>
             ${a.heading ? `<h2>${esc(a.heading)}</h2>` : ""}
             ${a.message ? `<p class="promo-msg">${esc(a.message)}</p>` : ""}
+            ${hasSound ? `<div class="btns center" style="margin-bottom:14px"><button class="btn ghost promo-play"><span>▶</span> Hear the announcement</button></div>` : ""}
             <div class="btns center">
               ${a.link_url ? `<a class="btn red" href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_label || "Learn more")}</a>` : ""}
               <button class="btn ghost promo-later">${a.link_url ? "Maybe later" : "Got it"}</button>
             </div>
           </div>`;
+        }
+        wrap.innerHTML = inner;
+        /* tap-to-play: voice at full volume, music quietly underneath, looped */
+        let voiceEl = null, musicEl = null, playing = false;
+        const playBtn = wrap.querySelector(".promo-play");
+        if (playBtn) playBtn.addEventListener("click", () => {
+          if (playing) {
+            voiceEl && voiceEl.pause(); musicEl && musicEl.pause();
+            playing = false; playBtn.innerHTML = "<span>▶</span> Hear the announcement";
+            return;
+          }
+          if (a.voice && !voiceEl) {
+            voiceEl = new Audio(a.voice);
+            voiceEl.addEventListener("ended", () => {
+              /* let the music breathe a beat after the voice, then fade it out */
+              if (!musicEl) { playing = false; playBtn.innerHTML = "<span>▶</span> Hear the announcement"; return; }
+              const fade = setInterval(() => {
+                musicEl.volume = Math.max(0, musicEl.volume - 0.05);
+                if (musicEl.volume <= 0) { clearInterval(fade); musicEl.pause(); playing = false; playBtn.innerHTML = "<span>▶</span> Hear the announcement"; }
+              }, 150);
+            });
+          }
+          if (a.music && !musicEl) { musicEl = new Audio(a.music); musicEl.loop = true; musicEl.volume = a.voice ? 0.22 : 0.7; }
+          voiceEl && voiceEl.play().catch(() => {});
+          musicEl && musicEl.play().catch(() => {});
+          playing = true; playBtn.innerHTML = "<span>❚❚</span> Pause";
+          if (typeof gtag === "function") gtag("event", "promo_listen", { promo: a.heading || "flyer" });
+        });
         const close = () => {
           try { localStorage.setItem("lcr_popup_seen", a.key); } catch { /* private mode */ }
+          voiceEl && voiceEl.pause(); musicEl && musicEl.pause();
           wrap.remove();
           document.body.classList.remove("modal-open");
         };

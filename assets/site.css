@@ -283,3 +283,21 @@ details.acc .in{padding:0 4px 18px; color:var(--ink-soft)}
 body.modal-open{overflow:hidden}
 @keyframes promoIn{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.promo{animation:none}}
+
+/* ---------- flyer-mode popup: the ad IS the modal ---------- */
+.promo-ad{position:relative; max-width:min(92vw,560px); text-align:center}
+.promo-poster{display:block; max-width:100%; max-height:76vh; object-fit:contain; margin:0 auto;
+  border:5px solid var(--paper-light); box-shadow:0 24px 70px rgba(0,0,0,.65); background:#000}
+.promo-ad .promo-x{top:-14px; right:-14px; box-shadow:0 4px 14px rgba(0,0,0,.5)}
+.promo-play{position:absolute; left:50%; bottom:86px; transform:translateX(-50%);
+  display:inline-flex; align-items:center; gap:10px; background:rgba(20,18,14,.85); color:var(--paper-light);
+  border:2px solid var(--paper-light); padding:12px 20px; font-family:var(--cond); font-weight:700;
+  text-transform:uppercase; letter-spacing:.1em; font-size:.9rem; cursor:pointer; backdrop-filter:blur(4px)}
+.promo-play:hover{background:var(--red-stamp); border-color:var(--red-stamp)}
+.promo-play span{font-size:.8em}
+.promo-card .promo-play{position:static; transform:none; background:transparent; color:var(--ink); border:3px solid var(--red-stamp); backdrop-filter:none}
+.promo-card .promo-play:hover{background:var(--red-stamp); color:#fff}
+.promo-bar{display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:16px}
+.promo-bar .btn.ghost{color:var(--paper-light); border-color:var(--paper-light)}
+.promo-bar .btn.ghost:hover{background:var(--paper-light); color:var(--ink); border-color:var(--paper-light)}
+@media (max-width:560px){ .promo-ad .promo-x{top:-10px; right:0} .promo-play{bottom:78px; padding:10px 14px; font-size:.8rem} }
