@@ -128,6 +128,49 @@
       });
   }
 
+  /* Homepage popup: whatever promotion the Ranch has saved in the records app
+     (/announcement there → /api/public/announcement here). Dismissing remembers
+     that announcement's key, so an edited announcement shows again. */
+  if (document.body.dataset.popup === "home" && window.LCR && LCR.dogsFeed) {
+    const src = LCR.dogsFeed.replace(/\/dogs$/, "/announcement");
+    fetch(src, { mode: "cors" })
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(a => {
+        if (!a.active) return;
+        let seen = null;
+        try { seen = localStorage.getItem("lcr_popup_seen"); } catch { /* private mode */ }
+        if (seen === a.key) return;
+        const wrap = document.createElement("div");
+        wrap.className = "promo";
+        wrap.setAttribute("role", "dialog");
+        wrap.setAttribute("aria-modal", "true");
+        wrap.setAttribute("aria-label", a.heading);
+        wrap.innerHTML = `<div class="promo-card">
+            <button class="promo-x" aria-label="Close">✕</button>
+            <p class="eyebrow">From the Warden's office</p>
+            <h2>${esc(a.heading)}</h2>
+            ${a.message ? `<p class="promo-msg">${esc(a.message)}</p>` : ""}
+            <div class="btns center">
+              ${a.link_url ? `<a class="btn red" href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_label || "Learn more")}</a>` : ""}
+              <button class="btn ghost promo-later">${a.link_url ? "Maybe later" : "Got it"}</button>
+            </div>
+          </div>`;
+        const close = () => {
+          try { localStorage.setItem("lcr_popup_seen", a.key); } catch { /* private mode */ }
+          wrap.remove();
+          document.body.classList.remove("modal-open");
+        };
+        wrap.addEventListener("click", e => { if (e.target === wrap) close(); });
+        wrap.querySelector(".promo-x").addEventListener("click", close);
+        wrap.querySelector(".promo-later").addEventListener("click", close);
+        document.addEventListener("keydown", function esc2(e){ if (e.key === "Escape"){ close(); document.removeEventListener("keydown", esc2); } });
+        document.body.appendChild(wrap);
+        document.body.classList.add("modal-open");
+        if (typeof gtag === "function") gtag("event", "promo_view", { promo: a.heading });
+      })
+      .catch(() => { /* no popup is fine */ });
+  }
+
   /* reviews ticker: duplicate the run so the -50% loop has no seam */
   const rev = $("#reviews");
   if (rev) rev.innerHTML += rev.innerHTML;

@@ -267,3 +267,14 @@ details.acc .in{padding:0 4px 18px; color:var(--ink-soft)}
 .loading{grid-column:1/-1; text-align:center; color:var(--muted); font-family:var(--type);
   font-size:.9rem; letter-spacing:.04em; padding:38px 10px; margin:0}
 .loading a{color:var(--red-deep)}
+
+/* ---------- homepage promo popup (set by the rescue in the records app) ---------- */
+.promo{position:fixed; inset:0; z-index:300; display:grid; place-items:center; padding:20px; background:rgba(20,18,14,.78); animation:promoIn .25s ease}
+.promo-card{background:var(--paper); border:4px solid var(--ink); box-shadow:12px 12px 0 var(--red-stamp); max-width:480px; width:100%; padding:34px 30px 30px; position:relative; text-align:center}
+.promo-card h2{margin:.2em 0 .4em}
+.promo-msg{color:var(--ink-soft); margin-bottom:20px; white-space:pre-line}
+.promo-x{position:absolute; top:8px; right:8px; background:var(--ink); color:var(--paper-light); border:0; font-family:var(--disp); font-size:1rem; width:34px; height:34px; cursor:pointer; line-height:1}
+.promo-x:hover{background:var(--red-stamp)}
+body.modal-open{overflow:hidden}
+@keyframes promoIn{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.promo{animation:none}}
