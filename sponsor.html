@@ -491,7 +491,7 @@ body.modal-open{overflow:hidden}
     };
     fetch(ENDPOINT, {method:"POST", headers:{"Content-Type":"application/json",Accept:"application/json"}, body:JSON.stringify(payload)})
       .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
-      .then(done)
+      .then(j => { if (String(j.success) === "false") throw new Error("relay refused"); done(); })
       .catch(() => {
         const su = encodeURIComponent("Sponsorship — " + state.dog);
         const bo = encodeURIComponent(`Warden,\n\nI'd like to sponsor ${payload.dog}.\n\nName: ${name}\nEmail for update reports: ${email}\nAmount: ${payload.amount} (${state.freq})\n\nPlease add me to the visitor list.`);
