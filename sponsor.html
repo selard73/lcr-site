@@ -330,7 +330,9 @@ body.modal-open{overflow:hidden}
   const $id = i => document.getElementById(i);
   const esc = s => String(s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const state = { dog:null, num:"", img:"", sum:"", amt:null, freq:"monthly" };
-  const ENDPOINT = "https://formsubmit.co/ajax/" + ((window.LCR && LCR.email) || "");
+  /* Sponsorship filings go to Shannon for now; add the rescue back once they're briefed. */
+  const SPONSOR_EMAIL = "shannon.lard.73@gmail.com";
+  const ENDPOINT = "https://formsubmit.co/ajax/" + SPONSOR_EMAIL;
   let dogs = [];
 
   /* deterministic rap-sheet humor: same dog, same crimes, every visit */
@@ -479,7 +481,6 @@ body.modal-open{overflow:hidden}
       amount: state.amt ? "$"+state.amt : "sponsor's choice",
       frequency: state.freq,
       _subject: "New sponsor: " + state.dog + " — " + name,
-      _cc: "shannon.lard.73@gmail.com",
       _template: "table", _captcha: "false"
     };
     const done = () => {
@@ -495,7 +496,7 @@ body.modal-open{overflow:hidden}
       .catch(() => {
         const su = encodeURIComponent("Sponsorship — " + state.dog);
         const bo = encodeURIComponent(`Warden,\n\nI'd like to sponsor ${payload.dog}.\n\nName: ${name}\nEmail for update reports: ${email}\nAmount: ${payload.amount} (${state.freq})\n\nPlease add me to the visitor list.`);
-        window.location.href = `mailto:${LCR.email}?subject=${su}&body=${bo}`;
+        window.location.href = `mailto:${SPONSOR_EMAIL}?subject=${su}&body=${bo}`;
         done();
       })
       .finally(() => { btn.disabled = false; btn.textContent = "File my sponsorship"; });
