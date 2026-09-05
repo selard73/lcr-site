@@ -53,7 +53,7 @@ p{margin:0 0 1em}
 .btn:hover{background:var(--red); border-color:var(--red); color:#fff; transform:translateY(-2px)}
 .btn.red{background:var(--red-stamp); border-color:var(--red-stamp); box-shadow:1px 1px 0 var(--green)}
 .btn.red:hover{background:var(--red-deep); border-color:var(--red-deep)}
-.btn.ghost{background:transparent; color:var(--red-deep); border-color:var(--red-stamp)}
+.btn.ghost{background:transparent; color:var(--ink); border-color:var(--red-stamp)}
 .btn.ghost:hover{background:var(--red-stamp); color:#fff; border-color:var(--red-stamp)}
 .btn.light{background:transparent; color:var(--paper-light); border-color:var(--paper-light)}
 .btn.light:hover{background:var(--paper-light); color:var(--ink); border-color:var(--paper-light)}
