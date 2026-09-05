@@ -19,7 +19,7 @@
   /* The outbound links are stamped in from window.LCR (data-link/-mail/-tel), and
      the dog cards are painted in later from the records feed — so listen once on
      the document rather than binding per element. */
-  var INTENT = { apply: "apply_click", foster: "foster_click", donate: "donate_click", quiz: "quiz_click" };
+  var INTENT = { apply: "apply_click", foster: "foster_click", donate: "donate_click", paypal: "donate_click", quiz: "quiz_click" };
   var SOCIAL = { facebook: 1, tiktok: 1, youtube: 1, petfinder: 1 };
 
   document.addEventListener("click", function (e) {

@@ -123,6 +123,7 @@ window.LCR = {
   apply:  "https://form.jotform.com/261266940400047",   // adoption application
   foster: "https://form.jotform.com/261407369955064",   // foster application
   donate: "https://cash.app/$LastChanceRanchSC",
+  paypal: "https://paypal.me/LastChanceRanchSC",
   facebook: "https://www.facebook.com/profile.php?id=61582497165034",
   tiktok: "https://www.tiktok.com/@last.chance.ranch03",
   youtube: "https://www.youtube.com/@LastChanceRanchofSC",
