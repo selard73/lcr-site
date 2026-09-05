@@ -16,16 +16,41 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;700&family=Special+Elite&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css?v=15">
 <style>
-/* page-scoped: dog picker + report styling (no site.css bump needed) */
+/* page-scoped: sponsorship wizard */
+.wstep{display:none}
+.wstep.on{display:block}
+.wprog{display:flex; justify-content:center; gap:8px; margin:6px 0 10px; font-family:var(--type); font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.wprog i{font-style:normal; opacity:.35}
+.wprog i.done,.wprog i.now{opacity:1}
+.wprog i.now{color:var(--red-deep)}
 .pick .dog{cursor:pointer; user-select:none}
 .pick .dog .btn{pointer-events:none}
 .pick .dog.sel{box-shadow:8px 8px 0 var(--red-stamp); transform:translate(-2px,-2px)}
-.pick .dog.sel .btn{background:var(--red-stamp); border-color:var(--red-stamp); color:#fff}
 .tiers{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:18px; margin:26px 0 8px}
-.tier{border:3px solid var(--ink); background:var(--paper-light); padding:20px 18px; text-align:center; box-shadow:5px 5px 0 var(--ink)}
+.tier{border:3px solid var(--ink); background:var(--paper-light); padding:20px 18px; text-align:center; box-shadow:5px 5px 0 var(--ink); cursor:pointer; transition:transform .12s, box-shadow .12s}
+.tier:hover{transform:translate(-2px,-2px)}
+.tier.sel{box-shadow:7px 7px 0 var(--red-stamp); transform:translate(-2px,-2px); background:var(--paper-white)}
 .tier b{display:block; font-family:var(--disp); font-weight:400; font-size:2rem; margin-bottom:2px}
+.tier.sel b{color:var(--red-deep)}
 .tier h3{font-size:1.05rem; margin:0 0 6px}
 .tier p{font-size:.92rem; color:var(--ink-soft); margin:0}
+.freq{display:flex; justify-content:center; gap:0; margin:20px 0 6px}
+.freq button{font-family:var(--cond); font-weight:700; text-transform:uppercase; letter-spacing:.08em; font-size:.9rem; padding:11px 20px; background:transparent; border:3px solid var(--ink); cursor:pointer; color:var(--ink)}
+.freq button+button{border-left:0}
+.freq button.sel{background:var(--ink); color:#fff}
+.wnav{display:flex; justify-content:center; gap:12px; margin-top:26px; align-items:center}
+.wback{background:none; border:0; font-family:var(--type); font-size:.85rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); cursor:pointer; text-decoration:underline}
+.wform{max-width:460px; margin:26px auto 0; text-align:left}
+.wform label{display:block; font-family:var(--type); font-size:.8rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:16px 0 4px}
+.wform input{width:100%; box-sizing:border-box; font-family:var(--body); font-size:1.05rem; padding:12px 14px; border:3px solid var(--ink); background:var(--paper-white); color:var(--ink)}
+.wform input:focus{outline:3px solid var(--red-stamp); outline-offset:-1px}
+.wsum{font-family:var(--type); text-align:center; margin:18px auto 0; color:var(--ink-soft)}
+.wsum b{color:var(--red-deep)}
+.werr{color:var(--red-deep); font-family:var(--type); font-size:.9rem; text-align:center; margin-top:12px}
+.confirm{background:var(--paper-white); border:3px solid var(--ink); box-shadow:8px 8px 0 var(--red-stamp); padding:34px 30px; max-width:560px; margin:8px auto 0; font-family:var(--type); position:relative; text-align:center}
+.confirm .stamp.lg{margin-bottom:14px; background:var(--paper-light)}
+.confirm ol{text-align:left; padding-left:1.4em; margin:18px 0}
+.confirm li{margin-bottom:12px}
 .report{background:var(--paper-white); border:3px solid var(--ink); box-shadow:8px 8px 0 var(--red-stamp); padding:28px 30px; font-family:var(--type); max-width:640px; margin:0 auto; position:relative}
 .report .rh{text-align:center; border-bottom:3px double var(--ink); padding-bottom:12px; margin-bottom:16px}
 .report .rh b{font-family:var(--disp); font-weight:400; font-size:1.5rem; letter-spacing:.06em; text-transform:uppercase; display:block}
@@ -34,8 +59,6 @@
 .report dt{font-weight:700; text-transform:uppercase; letter-spacing:.1em; font-size:.78rem; color:var(--muted); margin-top:14px}
 .report dd{margin:2px 0 0}
 .report .stamp{position:absolute; right:18px; top:14px; font-size:.95rem}
-.step-cta{margin-top:14px}
-#pickedname{color:var(--red-deep)}
 </style>
 </head>
 <body data-root="">
@@ -65,53 +88,92 @@
     <h1>Put a dog on your payroll</h1>
     <p class="lead narrow">Can't adopt right now? Sponsor an inmate instead. Your monthly gift covers one dog's food, meds, and vet care while they wait for parole — and the Warden keeps you posted on how your dog is doing.</p>
     <div class="btns center" style="margin-top:22px">
-      <a class="btn red" href="#pick">Pick your inmate</a>
+      <a class="btn red" href="#wizard">Start — pick your inmate</a>
     </div>
   </div>
 </section>
 
-<section class="tight" id="pick">
+<section class="tight" id="wizard">
   <div class="wrap">
-    <div class="center">
-      <p class="eyebrow">Step one</p>
-      <h2>Pick your inmate</h2>
-      <div class="rule"></div>
-      <p class="narrow" style="margin:0 auto;color:var(--ink-soft)">Tap a dog to choose them. Long-timers and sanctuary residents need sponsors most — they're in it for the long haul.</p>
-    </div>
-    <div class="dogs pick" id="sponsorpick"><p class="loading">Fetching the current roster from the Ranch…</p></div>
-  </div>
-</section>
+    <div class="wprog" aria-hidden="true"><i data-s="1" class="now">1 · Pick</i><i data-s="2">2 · Support</i><i data-s="3">3 · Updates</i><i data-s="4">4 · Done</i></div>
 
-<section class="light tight">
-  <div class="wrap">
-    <div class="center">
-      <p class="eyebrow">Step two</p>
-      <h2>Set up your support</h2>
-      <div class="rule"></div>
-      <p class="narrow" style="margin:0 auto;color:var(--ink-soft)">Suggested levels — any amount helps, one-time or monthly. In Cash App, set it to repeat monthly and put <strong>SPONSOR + your dog's name</strong> in the note so we know who's on your payroll.</p>
+    <!-- STEP 1: pick a dog -->
+    <div class="wstep on" id="w1">
+      <div class="center">
+        <p class="eyebrow">Step one</p>
+        <h2>Pick your inmate</h2>
+        <div class="rule"></div>
+        <p class="narrow" style="margin:0 auto;color:var(--ink-soft)">Look through the files and tap your dog. Long-timers and sanctuary residents need sponsors most — they're in it for the long haul.</p>
+      </div>
+      <div class="dogs pick" id="sponsorpick"><p class="loading">Fetching the current roster from the Ranch…</p></div>
     </div>
-    <div class="tiers">
-      <div class="tier"><b>$10</b><h3>Commissary snacks</h3><p>Treats, chews, and the occasional contraband tennis ball.</p></div>
-      <div class="tier"><b>$25</b><h3>Room &amp; board</h3><p>A month of food and heartworm &amp; flea prevention.</p></div>
-      <div class="tier"><b>$50</b><h3>Full sentence support</h3><p>Food plus a real dent in vet care for the dogs who wait longest.</p></div>
-      <div class="tier"><b>Any</b><h3>Care package</h3><p>One-time gift toward whatever your dog needs most.</p></div>
-    </div>
-    <div class="btns center step-cta">
-      <a class="btn red" data-link="donate" href="#" target="_blank" rel="noopener">Open Cash App</a>
-    </div>
-  </div>
-</section>
 
-<section class="tight">
-  <div class="wrap">
-    <div class="center">
-      <p class="eyebrow">Step three</p>
-      <h2>Get on the visitor list</h2>
-      <div class="rule"></div>
-      <p class="narrow" style="margin:0 auto 18px;color:var(--ink-soft)">Email us so we know where to send your dog's update reports. The button below writes the email for you<span id="pickednote" hidden> — for <strong id="pickedname"></strong></span>.</p>
+    <!-- STEP 2: choose support -->
+    <div class="wstep" id="w2">
+      <div class="center">
+        <p class="eyebrow">Step two</p>
+        <h2>Choose <span data-dog>your dog</span>'s support</h2>
+        <div class="rule"></div>
+        <p class="narrow" style="margin:0 auto;color:var(--ink-soft)">Suggested levels — every dollar goes to your dog's care. Pick one, then choose monthly or one-time.</p>
+      </div>
+      <div class="tiers" id="tiers">
+        <div class="tier" data-amt="10"><b>$10</b><h3>Commissary snacks</h3><p>Treats, chews, and the occasional contraband tennis ball.</p></div>
+        <div class="tier" data-amt="25"><b>$25</b><h3>Room &amp; board</h3><p>A month of food and heartworm &amp; flea prevention.</p></div>
+        <div class="tier" data-amt="50"><b>$50</b><h3>Full sentence support</h3><p>Food plus a real dent in vet care for the dogs who wait longest.</p></div>
+        <div class="tier" data-amt="0"><b>Any</b><h3>Care package</h3><p>You pick the amount in Cash App — every bit helps.</p></div>
+      </div>
+      <div class="freq" id="freq" role="group" aria-label="How often">
+        <button type="button" data-f="monthly" class="sel">Monthly</button>
+        <button type="button" data-f="one-time">One-time</button>
+      </div>
+      <div class="wnav">
+        <button class="wback" data-back="1">← Back to the dogs</button>
+        <button class="btn red" id="to3" disabled style="opacity:.5">Continue</button>
+      </div>
     </div>
-    <div class="btns center">
-      <a class="btn red" id="enroll" href="#">Enroll for update reports</a>
+
+    <!-- STEP 3: email for updates -->
+    <div class="wstep" id="w3">
+      <div class="center">
+        <p class="eyebrow">Step three</p>
+        <h2>Get on the visitor list</h2>
+        <div class="rule"></div>
+        <p class="narrow" style="margin:0 auto;color:var(--ink-soft)">Tell us where to send <span data-dog>your dog</span>'s update reports from the Warden's office.</p>
+      </div>
+      <p class="wsum" id="sum3"></p>
+      <form class="wform" id="wform" novalidate>
+        <label for="sname">Your name</label>
+        <input id="sname" name="name" type="text" autocomplete="name" required>
+        <label for="semail">Email for update reports</label>
+        <input id="semail" name="email" type="email" autocomplete="email" required>
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="wnav">
+          <button type="button" class="wback" data-back="2">← Back</button>
+          <button type="submit" class="btn red" id="filebtn">File my sponsorship</button>
+        </div>
+        <p class="werr" id="werr" hidden></p>
+      </form>
+    </div>
+
+    <!-- STEP 4: confirmation -->
+    <div class="wstep" id="w4">
+      <div class="center">
+        <p class="eyebrow">Step four</p>
+        <h2>Sponsorship filed</h2>
+        <div class="rule"></div>
+      </div>
+      <div class="confirm">
+        <span class="stamp lg">Filed</span>
+        <p><span data-dog>Your dog</span> has been notified of their new benefactor. (There was wagging.)</p>
+        <p><strong>One last thing — the money part happens in Cash App:</strong></p>
+        <ol>
+          <li>Tap the button below — it opens Cash App<span id="camt"></span>.</li>
+          <li>Put <strong>SPONSOR <span data-dogup>YOUR DOG</span></strong> in the note so we match the payment to you.</li>
+          <li id="crec">Set it to <strong>repeat monthly</strong> in Cash App.</li>
+        </ol>
+        <div class="btns center" style="margin-bottom:8px"><a class="btn red" id="cashbtn" data-link="donate" href="#" target="_blank" rel="noopener">Open Cash App</a></div>
+        <p style="color:var(--muted);font-size:.85rem">The Warden's office will confirm by email and your first Inmate Update Report will follow. Thank you — you just made a dog's whole month.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -119,10 +181,10 @@
 <section class="deep">
   <div class="wrap">
     <div class="center">
-      <p class="eyebrow">What you'll get</p>
+      <p class="eyebrow">What sponsors get</p>
       <h2>The Warden's update report</h2>
       <div class="rule"></div>
-      <p class="narrow" style="margin:0 auto 28px;color:var(--ink-soft)">Sponsors get periodic reports from the Warden's office on how their inmate is serving their time. A sample from the files:</p>
+      <p class="narrow" style="margin:0 auto 28px;color:var(--ink-soft)">A sample from the files:</p>
     </div>
     <div class="report">
       <span class="stamp sm">Good boy</span>
@@ -203,66 +265,122 @@
 
 <!--/FOOTER-->
 <script>
-/* Dog picker: same live feed as the homepage; cards select instead of navigate. */
+/* Sponsorship wizard: pick dog → choose support → email → confirmation.
+   The email step posts to FormSubmit, which forwards to the rescue's inbox;
+   if that fails we fall back to a prefilled mailto so nobody hits a dead end. */
 (function(){
-  const box = document.getElementById("sponsorpick");
-  const enroll = document.getElementById("enroll");
+  const $id = i => document.getElementById(i);
   const esc = s => String(s||"").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-  let picked = null;
+  const state = { dog:null, num:"", amt:null, freq:"monthly" };
+  const ENDPOINT = "https://formsubmit.co/ajax/" + ((window.LCR && LCR.email) || "");
 
-  function mailto(){
-    const dog = picked ? `${picked.name}${picked.num ? " (Inmate #" + picked.num + ")" : ""}` : "(tell us which dog!)";
-    const su = encodeURIComponent(`Sponsorship — ${picked ? picked.name : "new sponsor"}`);
-    const bo = encodeURIComponent(
-`Warden,
-
-I'd like to sponsor ${dog}.
-
-My name:
-Monthly amount (or one-time):
-Cash App name the payment will come from:
-
-Please add me to the visitor list for update reports.`);
-    enroll.href = `mailto:${(window.LCR && LCR.email) || ""}?subject=${su}&body=${bo}`;
+  function go(n){
+    for (let i=1;i<=4;i++) $id("w"+i).classList.toggle("on", i===n);
+    document.querySelectorAll(".wprog i").forEach(el => {
+      const s=+el.dataset.s; el.classList.toggle("now",s===n); el.classList.toggle("done",s<n);
+    });
+    $id("wizard").scrollIntoView({behavior:"smooth"});
+    if (typeof gtag==="function") gtag("event","sponsor_step",{step:n});
   }
-  mailto();
+  document.querySelectorAll(".wback").forEach(b => b.addEventListener("click", () => go(+b.dataset.back)));
 
-  function card(d){
-    return `<div class="dog" role="button" tabindex="0" aria-pressed="false" data-name="${esc(d.name)}" data-num="${esc(d.inmate_number||"")}">
+  function fill(){
+    document.querySelectorAll("[data-dog]").forEach(e => e.textContent = state.dog || "your dog");
+    document.querySelectorAll("[data-dogup]").forEach(e => e.textContent = (state.dog||"your dog").toUpperCase());
+  }
+
+  /* step 1: dogs */
+  const box = $id("sponsorpick");
+  const card = d => `<div class="dog" role="button" tabindex="0" data-name="${esc(d.name)}" data-num="${esc(d.inmate_number||"")}">
       <div class="pic"><span class="ph">?</span>${d.photo ? `<img src="${esc(d.photo.url)}" alt="${esc(d.name)}" loading="lazy" onerror="this.remove()">` : ""}${d.inmate_number ? `<span class="num">Inmate #${esc(d.inmate_number)}</span>` : ""}</div>
       <div class="body"><h3>${esc(d.name)}</h3><div class="meta">${esc(d.summary||"")}</div>
       <span class="btn sm">Sponsor ${esc(d.name)}</span></div></div>`;
+  function pickDog(el){
+    box.querySelectorAll(".dog").forEach(x => x.classList.remove("sel"));
+    el.classList.add("sel");
+    state.dog = el.dataset.name; state.num = el.dataset.num;
+    fill();
+    if (typeof gtag==="function") gtag("event","sponsor_pick",{dog_name:state.dog});
+    setTimeout(() => go(2), 350);            // brief beat so the selection reads, then advance
   }
-
-  function select(el){
-    box.querySelectorAll(".dog").forEach(x => { x.classList.remove("sel"); x.setAttribute("aria-pressed","false"); });
-    el.classList.add("sel"); el.setAttribute("aria-pressed","true");
-    picked = { name: el.dataset.name, num: el.dataset.num };
-    const note = document.getElementById("pickednote");
-    document.getElementById("pickedname").textContent = picked.name;
-    note.hidden = false;
-    el.querySelector(".btn").textContent = "Sponsoring " + picked.name + " ✓";
-    mailto();
-    if (typeof gtag === "function") gtag("event", "sponsor_pick", { dog_name: picked.name });
-  }
-
-  box.addEventListener("click", e => { const el = e.target.closest(".dog"); if (el) select(el); });
+  box.addEventListener("click", e => { const el=e.target.closest(".dog"); if (el) pickDog(el); });
   box.addEventListener("keydown", e => {
-    if (e.key !== "Enter" && e.key !== " ") return;
-    const el = e.target.closest(".dog"); if (el) { e.preventDefault(); select(el); }
+    if (e.key!=="Enter" && e.key!==" ") return;
+    const el=e.target.closest(".dog"); if (el){ e.preventDefault(); pickDog(el); }
   });
-
-  fetch(LCR.dogsFeed, { mode: "cors" })
+  fetch(LCR.dogsFeed, {mode:"cors"})
     .then(r => r.ok ? r.json() : Promise.reject(r.status))
     .then(data => {
-      const dogs = (data.dogs || []).filter(d => d.photo);
-      if (!dogs.length) throw new Error("empty");
+      const dogs=(data.dogs||[]).filter(d=>d.photo);
+      if(!dogs.length) throw new Error("empty");
       box.innerHTML = dogs.map(card).join("");
     })
     .catch(() => {
       box.innerHTML = `<p class="loading">We can't reach the kennel roster right now — but you can still sponsor!
-        <a href="${(window.LCR && LCR.facebook) || "#"}" target="_blank" rel="noopener">Message us on Facebook</a> and we'll match you with a dog who needs it most.</p>`;
+        <a href="${(window.LCR&&LCR.facebook)||"#"}" target="_blank" rel="noopener">Message us on Facebook</a> and we'll match you with a dog who needs it most.</p>`;
     });
+
+  /* step 2: tier + frequency */
+  const cont = $id("to3");
+  $id("tiers").addEventListener("click", e => {
+    const t = e.target.closest(".tier"); if (!t) return;
+    document.querySelectorAll(".tier").forEach(x => x.classList.remove("sel"));
+    t.classList.add("sel");
+    state.amt = +t.dataset.amt;               // 0 = "any"
+    cont.disabled = false; cont.style.opacity = 1;
+  });
+  $id("freq").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    document.querySelectorAll("#freq button").forEach(x => x.classList.remove("sel"));
+    b.classList.add("sel");
+    state.freq = b.dataset.f;
+  });
+  cont.addEventListener("click", () => {
+    if (state.amt === null) return;
+    const amt = state.amt ? `$${state.amt}` : "an amount of your choosing";
+    $id("sum3").innerHTML = `Filing: <b>${esc(state.dog)}</b>${state.num ? " (Inmate #"+esc(state.num)+")" : ""} · ${amt} ${state.freq === "monthly" ? "per month" : "one-time"}`;
+    go(3);
+  });
+
+  /* step 3: submit */
+  $id("wform").addEventListener("submit", e => {
+    e.preventDefault();
+    const name = $id("sname").value.trim(), email = $id("semail").value.trim();
+    const err = $id("werr");
+    if (!name || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      err.textContent = "The Warden needs a name and a working email — that's where the reports go."; err.hidden = false; return;
+    }
+    err.hidden = true;
+    const btn = $id("filebtn"); btn.disabled = true; btn.textContent = "Filing…";
+    const payload = {
+      name, email,
+      dog: state.dog + (state.num ? " (Inmate #"+state.num+")" : ""),
+      amount: state.amt ? "$"+state.amt : "sponsor's choice",
+      frequency: state.freq,
+      _subject: "New sponsor: " + state.dog + " — " + name,
+      _cc: "shannon.lard.73@gmail.com",
+      _template: "table", _captcha: "false"
+    };
+    const done = () => {
+      const cash = $id("cashbtn");
+      if (state.amt && LCR.donate) cash.href = LCR.donate + "/" + state.amt;
+      $id("camt").textContent = state.amt ? " with $"+state.amt+" filled in" : "";
+      $id("crec").style.display = state.freq === "monthly" ? "" : "none";
+      fill(); go(4);
+      if (typeof gtag==="function") gtag("event","sponsor_filed",{dog_name:state.dog,frequency:state.freq});
+    };
+    fetch(ENDPOINT, {method:"POST", headers:{"Content-Type":"application/json",Accept:"application/json"}, body:JSON.stringify(payload)})
+      .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
+      .then(done)
+      .catch(() => {
+        /* relay unreachable — fall back to a prefilled email so the signup still lands */
+        const su = encodeURIComponent("Sponsorship — " + state.dog);
+        const bo = encodeURIComponent(`Warden,\n\nI'd like to sponsor ${payload.dog}.\n\nName: ${name}\nEmail for update reports: ${email}\nAmount: ${payload.amount} (${state.freq})\n\nPlease add me to the visitor list.`);
+        window.location.href = `mailto:${LCR.email}?subject=${su}&body=${bo}`;
+        done();
+      })
+      .finally(() => { btn.disabled = false; btn.textContent = "File my sponsorship"; });
+  });
 })();
 </script>
 </body>
