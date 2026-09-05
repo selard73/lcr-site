@@ -145,10 +145,19 @@
         wrap.setAttribute("role", "dialog");
         wrap.setAttribute("aria-modal", "true");
         wrap.setAttribute("aria-label", a.heading);
-        wrap.innerHTML = `<div class="promo-card">
+        /* media: a video link wins over a flyer image; either may be absent */
+        let media = "";
+        if (a.video && a.video.embed_url) {
+          const eu = a.video.embed_url.replace(/autoplay=1/, "autoplay=0");
+          media = `<div class="promo-video ${a.video.orientation === "portrait" ? "tall" : ""}"><iframe src="${esc(eu)}" title="Video" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
+        } else if (a.image) {
+          media = `<img class="promo-img" src="${esc(a.image)}" alt="${esc(a.heading || "Announcement")}">`;
+        }
+        wrap.innerHTML = `<div class="promo-card ${media ? "has-media" : ""}">
             <button class="promo-x" aria-label="Close">✕</button>
+            ${media}
             <p class="eyebrow">From the Warden's office</p>
-            <h2>${esc(a.heading)}</h2>
+            ${a.heading ? `<h2>${esc(a.heading)}</h2>` : ""}
             ${a.message ? `<p class="promo-msg">${esc(a.message)}</p>` : ""}
             <div class="btns center">
               ${a.link_url ? `<a class="btn red" href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_label || "Learn more")}</a>` : ""}
