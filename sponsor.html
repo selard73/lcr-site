@@ -516,7 +516,40 @@ body.modal-open{overflow:hidden}
       amount: state.amt ? "$"+state.amt : "sponsor's choice",
       frequency: state.freq,
       _subject: "New sponsor: " + state.dog + " — " + name,
-      _template: "table", _captcha: "false"
+      _template: "table", _captcha: "false",
+      /* thank-you auto-reply to the sponsor, personalized per dog */
+      _autoresponse:
+        "OFFICIAL NOTICE — LAST CHANCE RANCH, DEPARTMENT OF PAWCTIONS
+
+" +
+        "Dear " + name + ",
+
+" +
+        "Your sponsorship of " + state.dog + (state.num ? " (Inmate #" + state.num + ")" : "") + " has been FILED. " +
+        "The inmate has been notified and responded with a full-body wag, which the Warden's office has entered into the record.
+
+" +
+        "YOUR PLEDGE: " + (state.amt ? "$" + state.amt : "amount of your choosing") + " " + (state.freq === "monthly" ? "per month" : "one-time") + ".
+
+" +
+        "IF YOU HAVEN'T FINISHED THE MONEY PART YET:
+" +
+        "1. Open Cash App: https://cash.app/$LastChanceRanchSC" + (state.amt ? "/" + state.amt : "") + "
+" +
+        "2. Put SPONSOR " + state.dog.toUpperCase() + " in the note.
+" +
+        (state.freq === "monthly" ? "3. Set it to repeat monthly in Cash App.
+" : "") +
+        "
+What happens next: the Warden's office will confirm your sponsorship, and " + state.dog + "'s Inmate Update Reports will arrive at this address — behavior reports, commissary logs, and parole status, written by the actual humans who love this actual dog.
+
+" +
+        "Thank you. You just made a dog's whole month.
+
+" +
+        "— The Warden's Office
+Last Chance Ranch of South Carolina · Aiken, SC
+https://lastchanceranchsc.com"
     };
     const done = () => {
       $id("cashbtn").href = (LCR.donate || "#") + (state.amt ? "/" + state.amt : "");
