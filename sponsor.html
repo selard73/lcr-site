@@ -343,7 +343,8 @@ body.modal-open{overflow:hidden}
   const state = { dog:null, num:"", img:"", sum:"", amt:null, freq:"monthly" };
   /* Sponsorship filings go to Shannon for now; add the rescue back once they're briefed. */
   const SPONSOR_EMAIL = "shannon.lard.73@gmail.com";
-  const ENDPOINT = "https://formsubmit.co/ajax/" + SPONSOR_EMAIL;
+  const JOTFORM = "https://submit.jotform.com/submit/262473512720048";
+  const JF = { name:"q2_q2_textbox0", email:"q3_q3_email1", dog:"q4_q4_textbox2", amount:"q5_q5_textbox3", freq:"q6_q6_textbox4" };
   let dogs = [];
 
   /* deterministic rap-sheet humor: same dog, same crimes, every visit */
@@ -510,64 +511,49 @@ body.modal-open{overflow:hidden}
     }
     err.hidden = true;
     const btn = $id("filebtn"); btn.disabled = true; btn.textContent = "Filing…";
-    const payload = {
-      name, email,
-      dog: state.dog + (state.num ? " (Inmate #"+state.num+")" : ""),
-      amount: state.amt ? "$"+state.amt : "sponsor's choice",
-      frequency: state.freq,
-      _subject: "New sponsor: " + state.dog + " — " + name,
-      _template: "table", _captcha: "false",
-      /* thank-you auto-reply to the sponsor, personalized per dog */
-      _autoresponse:
-        "OFFICIAL NOTICE — LAST CHANCE RANCH, DEPARTMENT OF PAWCTIONS
-
-" +
-        "Dear " + name + ",
-
-" +
-        "Your sponsorship of " + state.dog + (state.num ? " (Inmate #" + state.num + ")" : "") + " has been FILED. " +
-        "The inmate has been notified and responded with a full-body wag, which the Warden's office has entered into the record.
-
-" +
-        "YOUR PLEDGE: " + (state.amt ? "$" + state.amt : "amount of your choosing") + " " + (state.freq === "monthly" ? "per month" : "one-time") + ".
-
-" +
-        "IF YOU HAVEN'T FINISHED THE MONEY PART YET:
-" +
-        "1. Open Cash App: https://cash.app/$LastChanceRanchSC" + (state.amt ? "/" + state.amt : "") + "
-" +
-        "2. Put SPONSOR " + state.dog.toUpperCase() + " in the note.
-" +
-        (state.freq === "monthly" ? "3. Set it to repeat monthly in Cash App.
-" : "") +
-        "
-What happens next: the Warden's office will confirm your sponsorship, and " + state.dog + "'s Inmate Update Reports will arrive at this address — behavior reports, commissary logs, and parole status, written by the actual humans who love this actual dog.
-
-" +
-        "Thank you. You just made a dog's whole month.
-
-" +
-        "— The Warden's Office
-Last Chance Ranch of South Carolina · Aiken, SC
-https://lastchanceranchsc.com"
-    };
+    const dogLabel = state.dog + (state.num ? " (Inmate #"+state.num+")" : "");
+    const amtLabel = state.amt ? "$"+state.amt : "sponsor's choice";
     const done = () => {
       $id("cashbtn").href = (LCR.donate || "#") + (state.amt ? "/" + state.amt : "");
       $id("camt").textContent = state.amt ? " with $"+state.amt+" filled in" : "";
       $id("crec").style.display = state.freq === "monthly" ? "" : "none";
+      btn.disabled = false; btn.textContent = "File my sponsorship";
       fill(); show("4");
       if (typeof gtag==="function") gtag("event","sponsor_filed",{dog_name:state.dog,frequency:state.freq});
     };
-    fetch(ENDPOINT, {method:"POST", headers:{"Content-Type":"application/json",Accept:"application/json"}, body:JSON.stringify(payload)})
-      .then(r => { if(!r.ok) throw new Error(r.status); return r.json(); })
-      .then(j => { if (String(j.success) === "false") throw new Error("relay refused"); done(); })
-      .catch(() => {
-        const su = encodeURIComponent("Sponsorship — " + state.dog);
-        const bo = encodeURIComponent(`Warden,\n\nI'd like to sponsor ${payload.dog}.\n\nName: ${name}\nEmail for update reports: ${email}\nAmount: ${payload.amount} (${state.freq})\n\nPlease add me to the visitor list.`);
-        window.location.href = `mailto:${SPONSOR_EMAIL}?subject=${su}&body=${bo}`;
-        done();
-      })
-      .finally(() => { btn.disabled = false; btn.textContent = "File my sponsorship"; });
+    const fallback = () => {
+      const su = encodeURIComponent("Sponsorship — " + state.dog);
+      const bo = encodeURIComponent(`Warden,
+
+I'd like to sponsor ${dogLabel}.
+
+Name: ${name}
+Email for update reports: ${email}
+Amount: ${amtLabel} (${state.freq})
+
+Please add me to the visitor list.`);
+      window.location.href = `mailto:${SPONSOR_EMAIL}?subject=${su}&body=${bo}`;
+      done();
+    };
+    /* JotForm blocks cross-origin fetch, but a real form post into an invisible
+       iframe works everywhere. The iframe's load event after the post = success. */
+    const fields = { formID:"262473512720048" };
+    fields[JF.name] = name; fields[JF.email] = email; fields[JF.dog] = dogLabel;
+    fields[JF.amount] = amtLabel; fields[JF.freq] = state.freq;
+    const iframe = document.createElement("iframe");
+    iframe.name = "jfsink"; iframe.style.display = "none";
+    const f = document.createElement("form");
+    f.action = JOTFORM; f.method = "POST"; f.target = "jfsink"; f.style.display = "none";
+    for (const [k,v] of Object.entries(fields)){
+      const i = document.createElement("input"); i.type = "hidden"; i.name = k; i.value = v; f.appendChild(i);
+    }
+    document.body.append(iframe, f);
+    let settled = false;
+    const settle = ok => { if (settled) return; settled = true; setTimeout(() => { iframe.remove(); f.remove(); }, 500); ok ? done() : fallback(); };
+    const t0 = Date.now();
+    iframe.addEventListener("load", () => { if (Date.now() - t0 > 250) settle(true); });  // ignore the initial about:blank load
+    setTimeout(() => settle(false), 10000);
+    f.submit();
   });
 })();
 </script>
