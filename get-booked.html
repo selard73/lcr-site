@@ -34,6 +34,14 @@
 .gb-charge output{flex:1; font-family:var(--type); font-size:.95rem; color:var(--red-deep); font-weight:700}
 .gb-tip{font-size:.85rem; color:var(--muted); font-family:var(--type); margin-top:6px}
 .gb-actions{margin-top:26px}
+.gb-consent{border:3px dashed var(--ink); background:var(--paper-white); padding:16px 18px; margin-top:16px}
+.gb-consent p{font-family:var(--type); font-size:.85rem; color:var(--ink-soft); margin:0 0 12px}
+.wall{display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:18px; margin-top:30px}
+.wall figure{margin:0; border:3px solid var(--ink); background:var(--paper-light); box-shadow:4px 4px 0 var(--ink); padding:6px 6px 10px; transform:rotate(-.6deg)}
+.wall figure:nth-child(even){transform:rotate(.7deg)}
+.wall img{width:100%; display:block; border:1px solid rgba(0,0,0,.2)}
+.wall figcaption{font-family:var(--type); font-size:.72rem; letter-spacing:.04em; color:var(--ink-soft); margin-top:7px; line-height:1.4}
+.wall figcaption b{display:block; font-family:var(--cond); font-weight:700; text-transform:uppercase; font-size:.9rem; color:var(--ink)}
 </style>
 </head>
 <body data-root="">
@@ -80,10 +88,28 @@
       <div class="btns gb-actions">
         <button class="btn red" id="bookem" type="button" disabled style="opacity:.5">📋 Book 'em</button>
         <a class="btn" id="download" href="#" download="inmate-card.png" hidden>Download the card</a>
+        <button class="btn ghost" id="pin" type="button" hidden>📌 Pin to the Booking Log</button>
+      </div>
+      <div class="gb-consent" id="consent" hidden>
+        <p>By pinning, you confirm this is your pet's photo (no people, please) and agree the finished card may be shown in the public Booking Log below and on Last Chance Ranch's social media. The Warden reviews every card before it appears.</p>
+        <div class="btns"><button class="btn red sm" id="pinconfirm" type="button">I agree — pin it</button>
+        <button class="btn ghost sm" id="pincancel" type="button">Never mind</button></div>
       </div>
       <p class="gb-tip" id="status">Position your pet on the card, then hit BOOK 'EM. The charges are decided by the court — you'll see them on the final card.</p>
       <p class="gb-tip">Post it and tag <strong>Last Chance Ranch of South Carolina</strong> with <strong>#GetBooked</strong> — the Warden shares her favorites.</p>
     </div>
+  </div>
+</section>
+
+<section class="deep">
+  <div class="wrap">
+    <div class="center">
+      <p class="eyebrow">The Booking Log</p>
+      <h2>Recent bookings on the cell block wall</h2>
+      <div class="rule"></div>
+      <p class="narrow" style="margin:0 auto;color:var(--ink-soft)"><span id="wallcount">Pets</span> booked and pinned by visitors like you. Every card is reviewed by the Warden before it appears.</p>
+    </div>
+    <div class="wall" id="wall"><p class="loading">Opening the log book…</p></div>
   </div>
 </section>
 
@@ -337,6 +363,7 @@
     if (!f) return;
     rawFile = f;
     state.booked = false; dlBtn.hidden = true;
+    document.getElementById("pin").hidden = true; document.getElementById("consent").hidden = true;
     pendingCut = loadRemover().then(fn => fn ? fn(f) : null).catch(() => null);   // work while they position
     state.charge = randomCharge();
     state.num = String(Math.floor(Math.random()*98)+1);
@@ -389,6 +416,7 @@
     const finish = () => {
       state.booked = true; draw();
       dlBtn.hidden = false;
+      document.getElementById("pin").hidden = false;
       bookBtn.textContent = "📋 Booked ✓";
       status.textContent = "⚖️ The court has ruled: " + state.charge + ". Adjust if needed, then download!" + (state.cut ? "" : " (Heads up: background removal didn’t work on this device, so the full photo was used.)");
       if (typeof gtag === "function") gtag("event","getbooked_booked",{charge:state.charge});
@@ -411,6 +439,56 @@
   dlBtn.addEventListener("click", () => {
     if (typeof gtag === "function") gtag("event","getbooked_download",{charge:state.charge});
   });
+
+  /* ---- the Booking Log (Cell Block Wall) ---- */
+  const WALL_API = LCR.dogsFeed.replace(/\/dogs$/, "/getbooked");
+  const pinBtn = document.getElementById("pin");
+  const consent = document.getElementById("consent");
+  pinBtn.addEventListener("click", () => { consent.hidden = false; consent.scrollIntoView({behavior:"smooth", block:"nearest"}); });
+  document.getElementById("pincancel").addEventListener("click", () => { consent.hidden = true; });
+  document.getElementById("pinconfirm").addEventListener("click", () => {
+    consent.hidden = true;
+    pinBtn.disabled = true; pinBtn.textContent = "📌 Pinning…";
+    cv.toBlob(async b => {
+      if (!b){ pinBtn.textContent = "📌 Pin to the Booking Log"; pinBtn.disabled = false; return; }
+      const fd = new FormData();
+      fd.append("card", b, "card.png");
+      fd.append("name", state.name || "Inmate");
+      fd.append("charge", state.charge);
+      try {
+        const r = await fetch(WALL_API, { method:"POST", body: fd });
+        const j = await r.json().catch(() => ({}));
+        if (r.ok){
+          pinBtn.textContent = "📌 Pinned — awaiting the Warden ✓";
+          status.textContent = "Your card went to the Warden's desk. Approved cards appear in the Booking Log below (give it a little while).";
+          if (typeof gtag === "function") gtag("event","getbooked_pin",{charge:state.charge});
+        } else {
+          pinBtn.textContent = "📌 Pin to the Booking Log"; pinBtn.disabled = false;
+          status.textContent = j.error || "The booking desk didn't answer — try again in a minute.";
+        }
+      } catch {
+        pinBtn.textContent = "📌 Pin to the Booking Log"; pinBtn.disabled = false;
+        status.textContent = "The booking desk didn't answer — try again in a minute.";
+      }
+    }, "image/png");
+  });
+
+  /* render the approved log */
+  const wall = document.getElementById("wall");
+  fetch(WALL_API, { mode: "cors" })
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(d => {
+      const rows = d.bookings || [];
+      if (!rows.length){
+        wall.innerHTML = `<p class="loading">The log book is fresh — be the first pet booked. 📌</p>`;
+        return;
+      }
+      const escT = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+      wall.innerHTML = rows.map(x => `<figure><img src="${escT(x.url)}" alt="${escT(x.name)}" loading="lazy">
+        <figcaption><b>${escT(x.name)}</b>${escT(x.charge)}<br>Booked ${escT(x.booked_on)}</figcaption></figure>`).join("");
+      document.getElementById("wallcount").textContent = (d.count >= 60 ? "60+" : d.count) + " pets";
+    })
+    .catch(() => { wall.innerHTML = `<p class="loading">The log book is with the Warden right now — check back soon.</p>`; });
 
   /* drag to reposition (mouse + touch via pointer events) */
   let dragging = null;
