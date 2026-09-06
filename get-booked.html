@@ -278,9 +278,28 @@
     ctx.font = "700 42px Oswald, sans-serif"; ctx.fillText("UPLOAD A PHOTO TO BOOK YOUR PET", W/2, 580);
     ctx.restore();
   }
+  function drawGhosts(){
+    /* before booking: dashed outlines where the charge slip and stamp will land,
+       so nobody parks their pet's face under a future overlay */
+    ctx.save();
+    ctx.setLineDash([14,10]); ctx.lineWidth = 4; ctx.strokeStyle = "rgba(27,26,23,.55)";
+    ctx.fillStyle = "rgba(27,26,23,.55)"; ctx.font = "26px 'Special Elite', monospace";
+    ctx.translate(60, 96); ctx.rotate(-0.05);
+    ctx.strokeRect(0, 0, 560, 64);
+    ctx.fillText("charge will be typed here", 24, 42);
+    ctx.restore();
+    ctx.save();
+    ctx.setLineDash([14,10]); ctx.lineWidth = 4; ctx.strokeStyle = "rgba(196,48,43,.55)";
+    ctx.translate(W-250, 190); ctx.rotate(0.16);
+    ctx.strokeRect(-190, -84, 380, 168);
+    ctx.fillStyle = "rgba(196,48,43,.6)"; ctx.font = "26px 'Special Elite', monospace"; ctx.textAlign = "center";
+    ctx.fillText("stamp lands here", 0, 8);
+    ctx.restore(); ctx.textAlign = "left"; ctx.setLineDash([]);
+  }
   function draw(){
     drawWall(); drawPhoto(); placeholder();
-    if (state.booked){ drawCharge(); drawStamp(); }   // the charges are the surprise — final card only
+    if (state.booked){ drawCharge(); drawStamp(); }   // the charge is the surprise — final card only
+    else { drawGhosts(); }
     drawSign(); drawFooter();
     queueMicrotask(updateLink);
   }
