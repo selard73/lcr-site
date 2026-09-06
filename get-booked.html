@@ -426,10 +426,12 @@
     if (remover !== null) return remover;
     try {
       const { AutoModel, AutoProcessor, RawImage } = await import("https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.7.6/+esm");
-      const opts = { config: { model_type: "custom" } };
-      let model;
-      try { model = await AutoModel.from_pretrained("briaai/RMBG-1.4", { ...opts, device: "webgpu" }); }
-      catch { model = await AutoModel.from_pretrained("briaai/RMBG-1.4", opts); }
+      /* Probe for WebGPU before committing to it: a FAILED webgpu attempt poisons
+         the ONNX runtime for the whole page, so the wasm fallback would never load
+         (this is why removal silently did nothing in the Facebook in-app browser). */
+      let device = "wasm";
+      try { if (navigator.gpu && await navigator.gpu.requestAdapter()) device = "webgpu"; } catch(_e) {}
+      const model = await AutoModel.from_pretrained("briaai/RMBG-1.4", { config: { model_type: "custom" }, device });
       const processor = await AutoProcessor.from_pretrained("briaai/RMBG-1.4", { config: {
         do_normalize: true, do_pad: false, do_rescale: true, do_resize: true,
         image_mean: [0.5, 0.5, 0.5], image_std: [1, 1, 1],
