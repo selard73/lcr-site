@@ -24,6 +24,7 @@
 @media (max-width:860px){.gb{grid-template-columns:1fr}}
 .gb-canvas{width:100%; border:4px solid var(--ink); box-shadow:10px 10px 0 var(--red-stamp); display:block; background:var(--wall); touch-action:pan-y; cursor:grab}
 .gb-canvas.drag{cursor:grabbing}
+.gb-canvas.holding{box-shadow:10px 10px 0 var(--red-stamp), 0 0 0 5px var(--red-stamp)}
 .gb-controls label{display:block; font-family:var(--type); font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:18px 0 5px}
 .gb-controls input[type=text]{width:100%; box-sizing:border-box; font-family:var(--body); font-size:1.05rem; padding:12px 14px; border:3px solid var(--ink); background:var(--paper-white); color:var(--ink)}
 .gb-controls input[type=range]{width:100%; accent-color:var(--red-stamp); height:34px}
@@ -78,7 +79,7 @@
   <div class="wrap gb">
     <div>
       <canvas id="card" class="gb-canvas" width="1080" height="1350" aria-label="Your pet's mugshot card"></canvas>
-      <p class="gb-tip">On a phone: move &amp; zoom the photo with <strong>two fingers</strong> (one finger scrolls the page). On a computer: drag with the mouse, size with the slider.</p>
+      <p class="gb-tip">On a phone: move &amp; zoom with <strong>two fingers</strong>, or <strong>press and hold</strong> a moment, then drag with one finger (the card lights up red when it’s ready). One quick finger just scrolls the page. On a computer: drag with the mouse, size with the slider.</p>
     </div>
     <div class="gb-controls">
       <label class="gb-file" id="filelabel">📷 Step 1 — upload your pet's photo<input type="file" id="file" accept="image/*"></label>
@@ -574,6 +575,37 @@
   };
   cv.addEventListener("pointerup", endTouch);
   cv.addEventListener("pointercancel", endTouch);
+
+  /* Third option: press and hold ~half a second, then drag with ONE finger.
+     Before the hold lands, any real movement is treated as a page scroll. */
+  let holdTimer = null, holdDrag = null, holdStart = null;
+  const cancelHold = () => { clearTimeout(holdTimer); holdTimer = null; holdStart = null; holdDrag = null; cv.classList.remove("holding"); };
+  cv.addEventListener("touchstart", e => {
+    if (e.touches.length !== 1 || !state.img) return;
+    const t = e.touches[0];
+    holdStart = { x: t.clientX, y: t.clientY };
+    holdTimer = setTimeout(() => {
+      holdDrag = { x: holdStart.x, y: holdStart.y };
+      cv.classList.add("holding");
+      if (navigator.vibrate) navigator.vibrate(25);
+    }, 450);
+  }, { passive: true });
+  cv.addEventListener("touchmove", e => {
+    if (e.touches.length !== 1) { cancelHold(); return; }
+    const t = e.touches[0];
+    if (holdDrag){
+      e.preventDefault();                                   // the hold landed: this finger moves the photo, not the page
+      const k = scale();
+      state.ox += (t.clientX - holdDrag.x) * k;
+      state.oy += (t.clientY - holdDrag.y) * k;
+      holdDrag = { x: t.clientX, y: t.clientY };
+      draw();
+    } else if (holdStart && Math.hypot(t.clientX - holdStart.x, t.clientY - holdStart.y) > 12) {
+      cancelHold();                                          // moved before the hold: it's a scroll
+    }
+  }, { passive: false });
+  cv.addEventListener("touchend", cancelHold, { passive: true });
+  cv.addEventListener("touchcancel", cancelHold, { passive: true });
 
   /* fonts must be ready before first draw, or the sign renders in fallback */
   Promise.all([
