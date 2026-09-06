@@ -87,9 +87,17 @@
       <input type="range" id="zoom" min="0.5" max="3.5" step="0.01" value="1.15">
       <div class="btns gb-actions">
         <button class="btn red" id="bookem" type="button" disabled style="opacity:.5">📋 Book 'em</button>
-        <a class="btn" id="download" href="#" download="inmate-card.png" hidden>Download the card</a>
-        <button class="btn ghost" id="pin" type="button" hidden>📌 Pin to the Booking Log</button>
       </div>
+      <label id="sharelabel" hidden>Share your inmate</label>
+      <div class="btns" id="sharerow" hidden>
+        <button class="btn red" id="share" type="button" hidden>📤 Share</button>
+        <button class="btn" id="pin" type="button">📌 Pin to the Wall</button>
+        <a class="btn ghost" id="download" href="#" download="inmate-card.png">⬇️ Download</a>
+        <button class="btn ghost" id="copylink" type="button">🔗 Copy link</button>
+      </div>
+      <p class="gb-tip" id="bail" hidden>The booth is free — the real dogs run on donations. 💰 Donate:
+        <a data-link="donate" href="#" target="_blank" rel="noopener"><strong>Cash App</strong></a> ·
+        <a data-link="paypal" href="#" target="_blank" rel="noopener"><strong>PayPal</strong></a></p>
       <div class="gb-consent" id="consent" hidden>
         <p>By pinning, you confirm this is your pet's photo (no people, please) and agree the finished card may be shown in the public Booking Log below and on Last Chance Ranch's social media. The Warden reviews every card before it appears.</p>
         <div class="btns"><button class="btn red sm" id="pinconfirm" type="button">I agree — pin it</button>
@@ -362,8 +370,11 @@
     const f = e.target.files && e.target.files[0];
     if (!f) return;
     rawFile = f;
-    state.booked = false; dlBtn.hidden = true;
-    document.getElementById("pin").hidden = true; document.getElementById("consent").hidden = true;
+    state.booked = false;
+    document.getElementById("sharerow").hidden = true;
+    document.getElementById("sharelabel").hidden = true;
+    document.getElementById("bail").hidden = true;
+    document.getElementById("consent").hidden = true;
     pendingCut = loadRemover().then(fn => fn ? fn(f) : null).catch(() => null);   // work while they position
     state.charge = randomCharge();
     state.num = String(Math.floor(Math.random()*98)+1);
@@ -415,8 +426,10 @@
     status.textContent = "Taking pawprints, consulting the court…";
     const finish = () => {
       state.booked = true; draw();
-      dlBtn.hidden = false;
-      document.getElementById("pin").hidden = false;
+      document.getElementById("sharerow").hidden = false;
+      document.getElementById("sharelabel").hidden = false;
+      document.getElementById("bail").hidden = false;
+      shareBtn.hidden = !navigator.canShare;
       bookBtn.textContent = "📋 Booked ✓";
       status.textContent = "⚖️ The court has ruled: " + state.charge + ". Adjust if needed, then download!" + (state.cut ? "" : " (Heads up: background removal didn’t work on this device, so the full photo was used.)");
       if (typeof gtag === "function") gtag("event","getbooked_booked",{charge:state.charge});
@@ -440,6 +453,33 @@
     if (typeof gtag === "function") gtag("event","getbooked_download",{charge:state.charge});
   });
 
+  /* native share sheet with the card image attached (mobile); text-only fallback */
+  const shareBtn = document.getElementById("share");
+  const PAGE_URL = "https://lastchanceranchsc.com/get-booked.html";
+  shareBtn.addEventListener("click", () => {
+    cv.toBlob(async b => {
+      const text = (state.name || "My pet") + " got BOOKED at Last Chance Ranch 🚨 Charge: " + state.charge + ". Book yours free:";
+      try {
+        const f = b ? new File([b], (state.name || "inmate").toLowerCase().replace(/[^a-z0-9]+/g,"-") + "-mugshot.png", { type: "image/png" }) : null;
+        if (f && navigator.canShare && navigator.canShare({ files: [f] })) {
+          await navigator.share({ files: [f], text: text + " " + PAGE_URL });
+        } else if (navigator.share) {
+          await navigator.share({ text, url: PAGE_URL });
+        }
+        if (typeof gtag === "function") gtag("event","getbooked_share",{charge:state.charge});
+      } catch { /* user closed the sheet — fine */ }
+    }, "image/png");
+  });
+  const copyBtn = document.getElementById("copylink");
+  copyBtn.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(PAGE_URL);
+      copyBtn.textContent = "🔗 Copied ✓";
+      setTimeout(() => { copyBtn.textContent = "🔗 Copy link"; }, 2000);
+      if (typeof gtag === "function") gtag("event","getbooked_copylink");
+    } catch { copyBtn.textContent = "🔗 " + PAGE_URL; }
+  });
+
   /* ---- the Booking Log (Cell Block Wall) ---- */
   const WALL_API = LCR.dogsFeed.replace(/\/dogs$/, "/getbooked");
   const pinBtn = document.getElementById("pin");
@@ -450,7 +490,7 @@
     consent.hidden = true;
     pinBtn.disabled = true; pinBtn.textContent = "📌 Pinning…";
     cv.toBlob(async b => {
-      if (!b){ pinBtn.textContent = "📌 Pin to the Booking Log"; pinBtn.disabled = false; return; }
+      if (!b){ pinBtn.textContent = "📌 Pin to the Wall"; pinBtn.disabled = false; return; }
       const fd = new FormData();
       fd.append("card", b, "card.png");
       fd.append("name", state.name || "Inmate");
@@ -463,11 +503,11 @@
           status.textContent = "Your card went to the Warden's desk. Approved cards appear in the Booking Log below (give it a little while).";
           if (typeof gtag === "function") gtag("event","getbooked_pin",{charge:state.charge});
         } else {
-          pinBtn.textContent = "📌 Pin to the Booking Log"; pinBtn.disabled = false;
+          pinBtn.textContent = "📌 Pin to the Wall"; pinBtn.disabled = false;
           status.textContent = j.error || "The booking desk didn't answer — try again in a minute.";
         }
       } catch {
-        pinBtn.textContent = "📌 Pin to the Booking Log"; pinBtn.disabled = false;
+        pinBtn.textContent = "📌 Pin to the Wall"; pinBtn.disabled = false;
         status.textContent = "The booking desk didn't answer — try again in a minute.";
       }
     }, "image/png");
