@@ -237,7 +237,7 @@
   }
   function drawStamp(){
     ctx.save();
-    ctx.translate(W-240, 330); ctx.rotate(0.16);
+    ctx.translate(W-250, 190); ctx.rotate(0.16);
     ctx.globalAlpha = 0.92; ctx.strokeStyle = "#c4302b"; ctx.fillStyle = "#c4302b";
     ctx.lineWidth = 8; roundRect(-190,-84,380,168,8); ctx.stroke();
     ctx.lineWidth = 3; roundRect(-176,-70,352,140,6); ctx.stroke();
@@ -247,22 +247,17 @@
     ctx.restore(); ctx.textAlign = "left";
   }
   function drawCharge(){
-    /* house style (matches the quiz): black ink band, typewriter intro,
-       charge in big gold condensed caps — an evidence label, not a poster */
-    const bw = W-120, bh = 168, bx = 60, by = 46;
     ctx.save();
-    ctx.translate(bx+bw/2, by+bh/2); ctx.rotate(-0.012); ctx.translate(-(bx+bw/2), -(by+bh/2));
-    ctx.fillStyle = "rgba(0,0,0,.35)"; ctx.fillRect(bx+6, by+8, bw, bh);
-    ctx.fillStyle = "#1b1a17"; ctx.fillRect(bx, by, bw, bh);
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#eae0c8"; ctx.font = "27px 'Special Elite', monospace";
-    ctx.fillText("Booking complete. You are hereby charged with", bx+bw/2, by+52);
-    const c = state.charge.toUpperCase();
-    let px = 66;
-    do { ctx.font = "400 " + px + "px Anton, sans-serif"; px -= 3; } while (ctx.measureText(c).width > bw-60 && px > 26);
-    ctx.fillStyle = "#F4E4B0";
-    ctx.fillText(c, bx+bw/2, by+128);
-    ctx.restore(); ctx.textAlign = "left";
+    ctx.translate(60, 96); ctx.rotate(-0.05);
+    const text = "CHARGE: " + state.charge.toUpperCase();
+    ctx.font = "34px 'Special Elite', monospace";
+    const w = ctx.measureText(text).width + 48;
+    ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(6,8,w,64);
+    ctx.fillStyle = "#f3ecda"; ctx.fillRect(0,0,w,64);
+    ctx.strokeStyle = "#1b1a17"; ctx.lineWidth = 4; ctx.strokeRect(0,0,w,64);
+    ctx.fillStyle = "#1b1a17"; ctx.font = "34px 'Special Elite', monospace";
+    ctx.fillText(text, 24, 43);
+    ctx.restore();
   }
   function drawFooter(){
     ctx.fillStyle = "#1b1a17"; ctx.fillRect(0,H-90,W,90);
