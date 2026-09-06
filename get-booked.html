@@ -72,20 +72,17 @@
       <p class="gb-tip">Drag the photo to position it · pinch or use the zoom slider to size it</p>
     </div>
     <div class="gb-controls">
-      <label class="gb-file" id="filelabel">📷 Upload your pet's photo<input type="file" id="file" accept="image/*"></label>
+      <label class="gb-file" id="filelabel">📷 Step 1 — upload your pet's photo<input type="file" id="file" accept="image/*"></label>
       <label for="petname">Inmate name</label>
       <input type="text" id="petname" maxlength="18" placeholder="Biscuit" autocomplete="off">
       <label for="zoom">Zoom</label>
-      <input type="range" id="zoom" min="1" max="3.5" step="0.01" value="1.15">
-      <label>The charge</label>
-      <div class="gb-charge">
-        <output id="charge"></output>
-        <button class="btn ghost sm" id="reroll" type="button">Re-roll ⚖️</button>
-      </div>
+      <input type="range" id="zoom" min="0.5" max="3.5" step="0.01" value="1.15">
       <div class="btns gb-actions">
-        <a class="btn red" id="download" href="#" download="inmate-card.png">Download the card</a>
+        <button class="btn red" id="bookem" type="button" disabled style="opacity:.5">📋 Book 'em</button>
+        <a class="btn" id="download" href="#" download="inmate-card.png" hidden>Download the card</a>
       </div>
-      <p class="gb-tip">Then post it and tag <strong>Last Chance Ranch of South Carolina</strong> with <strong>#GetBooked</strong> — the Warden shares her favorites.</p>
+      <p class="gb-tip" id="status">Position your pet on the card, then hit BOOK 'EM. The charges are decided by the court — you'll see them on the final card.</p>
+      <p class="gb-tip">Post it and tag <strong>Last Chance Ranch of South Carolina</strong> with <strong>#GetBooked</strong> — the Warden shares her favorites.</p>
     </div>
   </div>
 </section>
@@ -170,12 +167,16 @@
     "Destruction of Property (Shoe-Related)","Impersonating a Very Good Boy","Obstruction of a Food Bowl","Flight Risk (Squirrel-Adjacent)"];
   const cv = document.getElementById("card"), ctx = cv.getContext("2d");
   const W = cv.width, H = cv.height;
+  function twoCharges(){
+    const a = CHARGES[Math.floor(Math.random()*CHARGES.length)];
+    let b; do { b = CHARGES[Math.floor(Math.random()*CHARGES.length)]; } while (b === a);
+    return [a, b];
+  }
   const state = {
-    img: null, zoom: 1.15, ox: 0, oy: 0,
+    img: null, cut: false, booked: false, zoom: 1.15, ox: 0, oy: 0,
     name: "", num: String(Math.floor(Math.random()*98)+1),
-    charge: CHARGES[Math.floor(Math.random()*CHARGES.length)]
+    charges: twoCharges()
   };
-  document.getElementById("charge").textContent = state.charge;
 
   function drawWall(){
     ctx.fillStyle = "#b6b4ad"; ctx.fillRect(0,0,W,H);
@@ -197,12 +198,20 @@
     if (!state.img) return;
     const img = state.img;
     const area = { x:0, y:0, w:W, h:H-210 };            // photo zone above the footer band
-    const base = Math.max(area.w/img.width, area.h/img.height) * state.zoom;
-    const dw = img.width*base, dh = img.height*base;
     ctx.save();
     ctx.beginPath(); ctx.rect(area.x,area.y,area.w,area.h); ctx.clip();
-    ctx.drawImage(img, area.x+(area.w-dw)/2+state.ox, area.y+(area.h-dh)/2+state.oy, dw, dh);
-    wallLines(0.16);                                     // faint chart over the photo sells the wall
+    if (state.cut){
+      /* background removed: pet stands on the wall, bottom-anchored, soft shadow */
+      const base = (area.h*0.82/img.height) * state.zoom;
+      const dw = img.width*base, dh = img.height*base;
+      ctx.shadowColor = "rgba(0,0,0,.38)"; ctx.shadowBlur = 34; ctx.shadowOffsetY = 14;
+      ctx.drawImage(img, area.x+(area.w-dw)/2+state.ox, area.y+area.h-dh-30+state.oy, dw, dh);
+    } else {
+      const base = Math.max(area.w/img.width, area.h/img.height) * state.zoom;
+      const dw = img.width*base, dh = img.height*base;
+      ctx.drawImage(img, area.x+(area.w-dw)/2+state.ox, area.y+(area.h-dh)/2+state.oy, dw, dh);
+      wallLines(0.16);                                   // faint chart over the photo sells the wall
+    }
     ctx.restore();
   }
   function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
@@ -243,15 +252,17 @@
   }
   function drawCharge(){
     ctx.save();
-    ctx.translate(60, 96); ctx.rotate(-0.05);
-    const text = "CHARGE: " + state.charge.toUpperCase();
-    ctx.font = "34px 'Special Elite', monospace";
-    const w = ctx.measureText(text).width + 48;
-    ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(6,8,w,64);
-    ctx.fillStyle = "#f3ecda"; ctx.fillRect(0,0,w,64);
-    ctx.strokeStyle = "#1b1a17"; ctx.lineWidth = 4; ctx.strokeRect(0,0,w,64);
-    ctx.fillStyle = "#1b1a17"; ctx.font = "34px 'Special Elite', monospace";
-    ctx.fillText(text, 24, 43);
+    ctx.translate(60, 84); ctx.rotate(-0.05);
+    const l1 = "CHARGES: " + state.charges[0].toUpperCase();
+    const l2 = "AND: " + state.charges[1].toUpperCase();
+    ctx.font = "30px 'Special Elite', monospace";
+    const w = Math.min(Math.max(ctx.measureText(l1).width, ctx.measureText(l2).width) + 48, W-320);
+    ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(6,8,w,106);
+    ctx.fillStyle = "#f3ecda"; ctx.fillRect(0,0,w,106);
+    ctx.strokeStyle = "#1b1a17"; ctx.lineWidth = 4; ctx.strokeRect(0,0,w,106);
+    ctx.fillStyle = "#1b1a17";
+    ctx.fillText(l1, 24, 42, w-44);
+    ctx.fillText(l2, 24, 84, w-44);
     ctx.restore();
   }
   function drawFooter(){
@@ -274,7 +285,9 @@
     ctx.restore();
   }
   function draw(){
-    drawWall(); drawPhoto(); placeholder(); drawCharge(); drawStamp(); drawSign(); drawFooter();
+    drawWall(); drawPhoto(); placeholder();
+    if (state.booked){ drawCharge(); drawStamp(); }   // the charges are the surprise — final card only
+    drawSign(); drawFooter();
     queueMicrotask(updateLink);
   }
   let linkBusy = false, linkDirty = false;
@@ -294,23 +307,62 @@
   }
 
   /* inputs */
+  const status = document.getElementById("status");
+  const bookBtn = document.getElementById("bookem");
+  const dlBtn = document.getElementById("download");
+  let rawFile = null;
+  function useImage(url, cut, cb){
+    const img = new Image();
+    img.onload = () => { state.img = img; state.cut = cut; state.ox = 0; state.oy = 0;
+      state.zoom = 1; document.getElementById("zoom").value = 1; draw(); if (cb) cb(); };
+    img.src = url;
+  }
   document.getElementById("file").addEventListener("change", e => {
     const f = e.target.files && e.target.files[0];
     if (!f) return;
-    const img = new Image();
-    img.onload = () => { state.img = img; state.ox = 0; state.oy = 0; draw();
-      if (typeof gtag === "function") gtag("event","getbooked_photo"); };
-    img.src = URL.createObjectURL(f);
+    rawFile = f;
+    state.booked = false; dlBtn.hidden = true;
+    state.charges = twoCharges();
+    state.num = String(Math.floor(Math.random()*98)+1);
     document.getElementById("filelabel").firstChild.textContent = "📷 " + f.name.slice(0,26) + " ✓ ";
+    useImage(URL.createObjectURL(f), false, () => {
+      bookBtn.disabled = false; bookBtn.style.opacity = 1;
+      status.textContent = "Position your pet, then hit BOOK 'EM. The court decides the charges — you'll see them on the final card.";
+    });
+    if (typeof gtag === "function") gtag("event","getbooked_photo");
+  });
+  let remover = null;                       // background-removal module, loaded from CDN on demand
+  async function loadRemover(){
+    if (remover !== null) return remover;
+    try {
+      const m = await import("https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm");
+      remover = m.removeBackground || false;
+    } catch(_e) { remover = false; }
+    return remover;
+  }
+  bookBtn.addEventListener("click", async () => {
+    if (!rawFile || state.booked) return;
+    bookBtn.disabled = true;
+    bookBtn.textContent = "📋 Booking…";
+    status.textContent = "Taking pawprints, removing the background, consulting the court… (first booking takes ~15 seconds)";
+    const fn = await loadRemover();
+    const finish = () => {
+      state.booked = true; draw();
+      dlBtn.hidden = false;
+      bookBtn.textContent = "📋 Booked ✓";
+      status.textContent = "⚖️ The court has ruled: " + state.charges[0] + " and " + state.charges[1] + ". Adjust if needed, then download!";
+      if (typeof gtag === "function") gtag("event","getbooked_booked",{charge:state.charges[0]});
+    };
+    if (!fn){ finish(); return; }
+    try {
+      const blob = await fn(rawFile);
+      useImage(URL.createObjectURL(blob), true, finish);
+    } catch(_e) { finish(); }
   });
   document.getElementById("petname").addEventListener("input", e => { state.name = e.target.value; draw(); });
   document.getElementById("zoom").addEventListener("input", e => { state.zoom = +e.target.value; draw(); });
-  document.getElementById("reroll").addEventListener("click", () => {
-    let c; do { c = CHARGES[Math.floor(Math.random()*CHARGES.length)]; } while (c === state.charge);
-    state.charge = c; document.getElementById("charge").textContent = c; draw();
-  });
-  document.getElementById("download").addEventListener("click", () => {
-    if (typeof gtag === "function") gtag("event","getbooked_download",{charge:state.charge});
+  dlBtn.addEventListener("click", () => {
+    if (typeof gtag === "function") gtag("event","getbooked_download",{charge:state.charges[0]});
   });
 
   /* drag to reposition (mouse + touch via pointer events) */
@@ -335,10 +387,11 @@
   ]).then(draw).catch(draw);
   draw();
 
-  /* ?demo=1 loads a sample so the page can be previewed/screenshotted with a photo */
+  /* ?demo=1 loads a sample, fully booked, so the page can be screenshotted */
   if (new URLSearchParams(location.search).get("demo")) {
     const img = new Image();
-    img.onload = () => { state.img = img; state.name = "Biscuit"; document.getElementById("petname").value = "Biscuit"; draw(); };
+    img.onload = () => { state.img = img; state.name = "Biscuit"; state.booked = true;
+      document.getElementById("petname").value = "Biscuit"; dlBtn.hidden = false; draw(); };
     img.src = "img/dogs/blue.jpg";
   }
 })();
