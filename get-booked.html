@@ -84,6 +84,12 @@
     </div>
     <div class="gb-controls">
       <label class="gb-file" id="filelabel">📷 Step 1 — upload your pet's photo<input type="file" id="file" accept="image/*"></label>
+      <label>Inmate species</label>
+      <div class="btns" id="species">
+        <button class="btn red sm" type="button" data-species="dog">🐶 Dog</button>
+        <button class="btn ghost sm" type="button" data-species="cat">🐱 Cat</button>
+        <button class="btn ghost sm" type="button" data-species="other">🐾 Other</button>
+      </div>
       <label for="petname">Inmate name</label>
       <input type="text" id="petname" maxlength="18" placeholder="Biscuit" autocomplete="off">
       <label for="zoom">Zoom</label>
@@ -198,26 +204,46 @@
 /* Get Booked: everything happens in the browser on a canvas — no uploads
    leave the visitor's device, nothing costs the rescue a cent. */
 (function(){
-  const CHARGES = ["Aggravated Cuddling","Grand Theft Sandwich","Excessive Zoomies","Loitering on Furniture",
-    "Aggravated Napping","Resisting Bathtime","Disturbing the Peace (Tail-Related)","Excessive Door Greetings",
-    "Suspicious Side-Eye","Escaping Custody (Fence-Related)","Grand Larceny of Hearts","Possession of Contraband (Tennis Balls)",
-    "Destruction of Property (Shoe-Related)","Impersonating a Very Good Boy","Obstruction of a Food Bowl","Flight Risk (Squirrel-Adjacent)"];
+  const CHARGE_POOLS = {
+    dog: ["Aggravated Cuddling","Grand Theft Sandwich","Excessive Zoomies","Loitering on Furniture",
+      "Aggravated Napping","Resisting Bathtime","Disturbing the Peace (Tail-Related)","Excessive Door Greetings",
+      "Suspicious Side-Eye","Escaping Custody (Fence-Related)","Grand Larceny of Hearts","Possession of Contraband (Tennis Balls)",
+      "Destruction of Property (Shoe-Related)","Impersonating a Very Good Boy","Obstruction of a Food Bowl","Flight Risk (Squirrel-Adjacent)"],
+    cat: ["Aggravated Knocking of Items Off Counters","Tampering with a Full Water Glass","Aggravated Panhandling (Was Already Fed)",
+      "Ankle Assault","Breaking and Entering (Cardboard Box)","Unlawful Assembly on the Keyboard",
+      "Possession of Contraband (Hair Ties)","Impersonating a Liquid","Ignoring Direct Orders (All of Them)",
+      "Loitering in the Sink","Failure to Appear (Under the Bed)","Sitting on Documents of National Importance",
+      "Excessive Judgment of Houseguests","Resisting Affection (Then Demanding It)","Suspicious Side-Eye","Grand Theft Rotisserie Chicken"],
+    other: ["Suspicious Side-Eye","Grand Theft Sandwich","Aggravated Napping","Obstruction of a Food Bowl",
+      "Loitering on Furniture","Aggravated Cuddling","Resisting Bathtime","Grand Larceny of Hearts",
+      "Tampering with a Full Water Glass","Aggravated Panhandling (Was Already Fed)"]
+  };
   const cv = document.getElementById("card"), ctx = cv.getContext("2d");
   const W = cv.width, H = cv.height;
-  /* random, but never the same charge twice in a row on the same device */
+  /* random from the species' pool, but never the same charge twice in a row on the same device */
   const randomCharge = () => {
+    const pool = CHARGE_POOLS[state.species] || CHARGE_POOLS.dog;
     let last = null;
     try { last = localStorage.getItem("lcr_lastcharge"); } catch(_e) {}
     let pick;
-    do { pick = CHARGES[Math.floor(Math.random()*CHARGES.length)]; } while (pick === last);
+    do { pick = pool[Math.floor(Math.random()*pool.length)]; } while (pick === last);
     try { localStorage.setItem("lcr_lastcharge", pick); } catch(_e) {}
     return pick;
   };
   const state = {
     img: null, cut: false, booked: false, zoom: 1.15, ox: 0, oy: 0,
     name: "", num: String(Math.floor(Math.random()*98)+1),
-    charge: randomCharge()
+    species: "dog", charge: ""
   };
+  state.charge = randomCharge();
+  document.querySelectorAll("#species .btn").forEach(b => b.addEventListener("click", () => {
+    state.species = b.dataset.species;
+    document.querySelectorAll("#species .btn").forEach(x => {
+      x.classList.toggle("red", x === b); x.classList.toggle("ghost", x !== b);
+    });
+    if (!state.booked) state.charge = randomCharge();   // the court re-draws from the right docket
+    if (typeof gtag === "function") gtag("event","getbooked_species",{species:state.species});
+  }));
 
   function drawWall(){
     ctx.fillStyle = "#b6b4ad"; ctx.fillRect(0,0,W,H);
