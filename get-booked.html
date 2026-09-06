@@ -202,10 +202,10 @@
     ctx.beginPath(); ctx.rect(area.x,area.y,area.w,area.h); ctx.clip();
     if (state.cut){
       /* background removed: pet stands on the wall, bottom-anchored, soft shadow */
-      const base = (area.h*0.82/img.height) * state.zoom;
+      const base = (area.h*0.97/img.height) * state.zoom;
       const dw = img.width*base, dh = img.height*base;
       ctx.shadowColor = "rgba(0,0,0,.38)"; ctx.shadowBlur = 34; ctx.shadowOffsetY = 14;
-      ctx.drawImage(img, area.x+(area.w-dw)/2+state.ox, area.y+area.h-dh-30+state.oy, dw, dh);
+      ctx.drawImage(img, area.x+(area.w-dw)/2+state.ox, area.y+area.h-dh-14+state.oy, dw, dh);
     } else {
       const base = Math.max(area.w/img.width, area.h/img.height) * state.zoom;
       const dw = img.width*base, dh = img.height*base;
@@ -311,10 +311,12 @@
   const bookBtn = document.getElementById("bookem");
   const dlBtn = document.getElementById("download");
   let rawFile = null;
-  function useImage(url, cut, cb){
+  function useImage(url, cut, cb, keep){
     const img = new Image();
-    img.onload = () => { state.img = img; state.cut = cut; state.ox = 0; state.oy = 0;
-      state.zoom = 1; document.getElementById("zoom").value = 1; draw(); if (cb) cb(); };
+    img.onload = () => { state.img = img; state.cut = cut;
+      if (!keep){ state.ox = 0; state.oy = 0; state.zoom = 1; document.getElementById("zoom").value = 1; }
+      else { state.oy = 0; }                     // cutouts anchor to the floor; keep zoom + sideways position
+      draw(); if (cb) cb(); };
     img.src = url;
   }
   document.getElementById("file").addEventListener("change", e => {
@@ -322,6 +324,7 @@
     if (!f) return;
     rawFile = f;
     state.booked = false; dlBtn.hidden = true;
+    pendingCut = loadRemover().then(fn => fn ? fn(f) : null).catch(() => null);   // work while they position
     state.charges = twoCharges();
     state.num = String(Math.floor(Math.random()*98)+1);
     document.getElementById("filelabel").firstChild.textContent = "📷 " + f.name.slice(0,26) + " ✓ ";
@@ -331,7 +334,32 @@
     });
     if (typeof gtag === "function") gtag("event","getbooked_photo");
   });
+  /* The remover returns the full frame with a transparent background — trim it
+     to the pet so the card sizes to the animal, not to the original photo. */
+  function trimCutout(img){
+    const cap = 1600, k = Math.min(1, cap/Math.max(img.width, img.height));
+    const w = Math.round(img.width*k), h = Math.round(img.height*k);
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const x = c.getContext("2d"); x.drawImage(img, 0, 0, w, h);
+    const d = x.getImageData(0, 0, w, h).data;
+    let minX = w, minY = h, maxX = -1, maxY = -1;
+    for (let y = 0; y < h; y += 2) for (let px = 0; px < w; px += 2) {
+      if (d[(y*w+px)*4+3] > 16) {
+        if (px < minX) minX = px; if (px > maxX) maxX = px;
+        if (y < minY) minY = y; if (y > maxY) maxY = y;
+      }
+    }
+    if (maxX < 0) return null;                                  // nothing detected — keep full frame
+    const pad = Math.round(Math.max(maxX-minX, maxY-minY) * 0.04);
+    minX = Math.max(0, minX-pad); minY = Math.max(0, minY-pad);
+    maxX = Math.min(w-1, maxX+pad); maxY = Math.min(h-1, maxY+pad);
+    const out = document.createElement("canvas");
+    out.width = maxX-minX+1; out.height = maxY-minY+1;
+    out.getContext("2d").drawImage(c, minX, minY, out.width, out.height, 0, 0, out.width, out.height);
+    return out.toDataURL("image/png");
+  }
   let remover = null;                       // background-removal module, loaded from CDN on demand
+  let pendingCut = null;                    // removal starts at upload time, awaited at booking time
   async function loadRemover(){
     if (remover !== null) return remover;
     try {
@@ -344,8 +372,7 @@
     if (!rawFile || state.booked) return;
     bookBtn.disabled = true;
     bookBtn.textContent = "📋 Booking…";
-    status.textContent = "Taking pawprints, removing the background, consulting the court… (first booking takes ~15 seconds)";
-    const fn = await loadRemover();
+    status.textContent = "Taking pawprints, consulting the court…";
     const finish = () => {
       state.booked = true; draw();
       dlBtn.hidden = false;
@@ -353,10 +380,17 @@
       status.textContent = "⚖️ The court has ruled: " + state.charges[0] + " and " + state.charges[1] + ". Adjust if needed, then download!" + (state.cut ? "" : " (Heads up: background removal didn’t work on this device, so the full photo was used.)");
       if (typeof gtag === "function") gtag("event","getbooked_booked",{charge:state.charges[0]});
     };
-    if (!fn){ finish(); return; }
     try {
-      const blob = await fn(rawFile);
-      useImage(URL.createObjectURL(blob), true, finish);
+      const blob = await pendingCut;
+      if (!blob){ finish(); return; }
+      const full = new Image();
+      full.onload = () => {
+        const trimmed = trimCutout(full);
+        if (trimmed) useImage(trimmed, true, finish);           // fresh fit: pet fills the card
+        else finish();
+      };
+      full.onerror = finish;
+      full.src = URL.createObjectURL(blob);
     } catch(_e) { finish(); }
   });
   document.getElementById("petname").addEventListener("input", e => { state.name = e.target.value; draw(); });
