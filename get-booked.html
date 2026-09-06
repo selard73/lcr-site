@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get Booked — Make Your Pet's Mugshot — Last Chance Ranch of South Carolina</title>
+<meta name="description" content="Upload your pet's photo and get their official Last Chance Ranch inmate mugshot card — free. Post bail for a real inmate while you're here.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Get Booked — Make Your Pet's Mugshot Card">
+<meta property="og:description" content="Every pet is guilty of something. Book yours at the Department of Pawctions — free mugshot card, real dogs helped.">
+<meta property="og:image" content="https://lastchanceranchsc.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://lastchanceranchsc.com/get-booked.html">
+<meta property="og:site_name" content="Last Chance Ranch of South Carolina">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://lastchanceranchsc.com/og.png">
+<link rel="icon" href="img/seal.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@500;700&family=Special+Elite&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css?v=19">
+<style>
+.gb{display:grid; grid-template-columns:minmax(280px,440px) 1fr; gap:40px; align-items:start}
+@media (max-width:860px){.gb{grid-template-columns:1fr}}
+.gb-canvas{width:100%; border:4px solid var(--ink); box-shadow:10px 10px 0 var(--red-stamp); display:block; background:var(--wall); touch-action:none; cursor:grab}
+.gb-canvas.drag{cursor:grabbing}
+.gb-controls label{display:block; font-family:var(--type); font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin:18px 0 5px}
+.gb-controls input[type=text]{width:100%; box-sizing:border-box; font-family:var(--body); font-size:1.05rem; padding:12px 14px; border:3px solid var(--ink); background:var(--paper-white); color:var(--ink)}
+.gb-controls input[type=range]{width:100%; accent-color:var(--red-stamp)}
+.gb-file{border:3px dashed var(--ink); background:var(--paper-white); padding:22px; text-align:center; cursor:pointer; font-family:var(--cond); font-weight:700; text-transform:uppercase; letter-spacing:.08em}
+.gb-file:hover{border-color:var(--red-stamp); color:var(--red-deep)}
+.gb-file input{display:none}
+.gb-charge{display:flex; gap:10px; align-items:center}
+.gb-charge output{flex:1; font-family:var(--type); font-size:.95rem; color:var(--red-deep); font-weight:700}
+.gb-tip{font-size:.85rem; color:var(--muted); font-family:var(--type); margin-top:6px}
+.gb-actions{margin-top:26px}
+</style>
+</head>
+<body data-root="">
+<!--HEADER-->
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="index.html"><img src="img/seal.jpg" alt=""><span><b>Last Chance Ranch</b><small>of South Carolina · Aiken, SC</small></span></a>
+    <button class="navtoggle" aria-expanded="false" aria-controls="nav">Menu</button>
+    <ul class="nav" id="nav">
+      <li><a href="dogs/index.html">Find a Dog</a></li>
+      <li><a href="adopt.html">Adopt</a></li>
+      <li><a href="foster.html">Foster</a></li>
+      <li><a href="volunteer.html">Volunteer</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a class="cta" href="donate.html">Donate</a></li>
+    </ul>
+  </div>
+</header>
+
+<!--/HEADER-->
+<main id="main">
+
+<section class="dark pageh">
+  <div class="wrap center">
+    <p class="eyebrow">Department of Pawctions</p>
+    <h1>Get booked</h1>
+    <p class="lead narrow">Every pet is guilty of something. Upload their photo, receive their official Last Chance Ranch mugshot card, and post it proudly. Free — but real inmates are counting on your bail money.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap gb">
+    <div>
+      <canvas id="card" class="gb-canvas" width="1080" height="1350" aria-label="Your pet's mugshot card"></canvas>
+      <p class="gb-tip">Drag the photo to position it · pinch or use the zoom slider to size it</p>
+    </div>
+    <div class="gb-controls">
+      <label class="gb-file" id="filelabel">📷 Upload your pet's photo<input type="file" id="file" accept="image/*"></label>
+      <label for="petname">Inmate name</label>
+      <input type="text" id="petname" maxlength="18" placeholder="Biscuit" autocomplete="off">
+      <label for="zoom">Zoom</label>
+      <input type="range" id="zoom" min="1" max="3.5" step="0.01" value="1.15">
+      <label>The charge</label>
+      <div class="gb-charge">
+        <output id="charge"></output>
+        <button class="btn ghost sm" id="reroll" type="button">Re-roll ⚖️</button>
+      </div>
+      <div class="btns gb-actions">
+        <a class="btn red" id="download" href="#" download="inmate-card.png">Download the card</a>
+      </div>
+      <p class="gb-tip">Then post it and tag <strong>Last Chance Ranch of South Carolina</strong> with <strong>#GetBooked</strong> — the Warden shares her favorites.</p>
+    </div>
+  </div>
+</section>
+
+<section class="light">
+  <div class="wrap two">
+    <div>
+      <p class="eyebrow" style="text-align:left">The honor system</p>
+      <h2>Post bail for a real inmate</h2>
+      <p>The booth is free. But the real inmates of Last Chance Ranch — every one pulled from a euthanasia list — run on donations. If the card made you smile, any amount keeps the commissary stocked.</p>
+      <div class="btns">
+        <a class="btn red" data-link="donate" href="#" target="_blank" rel="noopener">Via Cash App</a>
+        <a class="btn" data-link="paypal" href="#" target="_blank" rel="noopener">Via PayPal</a>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow" style="text-align:left">Go deeper</p>
+      <h2>Meet the real inmates</h2>
+      <p>Your pet's cellmates are waiting: real dogs, real rap sheets, all eligible for parole. Or find out which one is your pawtner in crime.</p>
+      <div class="btns">
+        <a class="btn ghost" href="dogs/index.html">Adoptable dogs</a>
+        <a class="btn ghost" href="sponsor.html">Sponsor an inmate</a>
+        <a class="btn ghost" data-link="quiz" href="#" target="_blank" rel="noopener">Take the quiz</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+<!--FOOTER-->
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="index.html"><img src="img/seal.jpg" alt=""><span><b>Last Chance Ranch</b><small>Department of Pawctions</small></span></a>
+        <p>A small no-kill dog &amp; cat sanctuary in Aiken, South Carolina. Every animal here is serving time for circumstances beyond their control — and every one of them is eligible for parole.</p>
+        <div class="social">
+          <a data-link="facebook" href="#" target="_blank" rel="noopener">Facebook</a>
+          <a data-link="tiktok" href="#" target="_blank" rel="noopener">TikTok</a>
+          <a data-link="youtube" href="#" target="_blank" rel="noopener">YouTube</a>
+          <a data-link="petfinder" href="#" target="_blank" rel="noopener">Petfinder</a>
+        </div>
+      </div>
+      <div>
+        <h4>Get involved</h4>
+        <ul>
+          <li><a href="dogs/index.html">Adoptable dogs</a></li>
+          <li><a href="adopt.html">How to adopt</a></li>
+          <li><a href="foster.html">Foster a dog</a></li>
+          <li><a href="volunteer.html">Volunteer</a></li>
+          <li><a href="donate.html">Donate · Post Bail</a></li>
+          <li><a href="sponsor.html">Sponsor an inmate</a></li>
+          <li><a href="get-booked.html">Get your pet booked (free mugshot)</a></li>
+          <li><a data-link="quiz" href="#" target="_blank" rel="noopener">Who’s your pawtner in crime? (quiz)</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact the Warden</h4>
+        <ul>
+          <li><a data-tel href="#"><span data-text="phone"></span></a></li>
+          <li><a data-mail href="#"></a></li>
+          <li>Aiken, South Carolina</li>
+          <li><a href="about.html#contact">Visits by appointment</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="fine"><span>© <span id="yr"></span> Last Chance Ranch of South Carolina, a registered 501(c)(3) nonprofit. All inmates innocent.</span><span>Site by <a href="https://shannonlard.com" target="_blank" rel="noopener">Shannon L.</a></span></div>
+  </div>
+</footer>
+<script>document.getElementById("yr").textContent=new Date().getFullYear()</script>
+<script src="assets/dogs.js?v=10"></script>
+<script src="assets/site.js?v=19"></script>
+
+<!--/FOOTER-->
+<script>
+/* Get Booked: everything happens in the browser on a canvas — no uploads
+   leave the visitor's device, nothing costs the rescue a cent. */
+(function(){
+  const CHARGES = ["Aggravated Cuddling","Grand Theft Sandwich","Excessive Zoomies","Loitering on Furniture",
+    "Aggravated Napping","Resisting Bathtime","Disturbing the Peace (Tail-Related)","Excessive Door Greetings",
+    "Suspicious Side-Eye","Escaping Custody (Fence-Related)","Grand Larceny of Hearts","Possession of Contraband (Tennis Balls)",
+    "Destruction of Property (Shoe-Related)","Impersonating a Very Good Boy","Obstruction of a Food Bowl","Flight Risk (Squirrel-Adjacent)"];
+  const cv = document.getElementById("card"), ctx = cv.getContext("2d");
+  const W = cv.width, H = cv.height;
+  const state = {
+    img: null, zoom: 1.15, ox: 0, oy: 0,
+    name: "", num: String(Math.floor(Math.random()*98)+1),
+    charge: CHARGES[Math.floor(Math.random()*CHARGES.length)]
+  };
+  document.getElementById("charge").textContent = state.charge;
+
+  function drawWall(){
+    ctx.fillStyle = "#b6b4ad"; ctx.fillRect(0,0,W,H);
+    wallLines(1);
+  }
+  function wallLines(alpha){
+    ctx.save(); ctx.globalAlpha = alpha;
+    ctx.strokeStyle = "rgba(60,58,52,.55)"; ctx.lineWidth = 4;
+    ctx.font = "700 40px Oswald, sans-serif"; ctx.fillStyle = "rgba(45,43,38,.75)";
+    const labels = ["6'","5'","4'","3'","2'","1'"];
+    labels.forEach((t,i) => {
+      const y = 90 + i*170;
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+      ctx.fillText(t, 26, y-14);
+    });
+    ctx.restore();
+  }
+  function drawPhoto(){
+    if (!state.img) return;
+    const img = state.img;
+    const area = { x:0, y:0, w:W, h:H-210 };            // photo zone above the footer band
+    const base = Math.max(area.w/img.width, area.h/img.height) * state.zoom;
+    const dw = img.width*base, dh = img.height*base;
+    ctx.save();
+    ctx.beginPath(); ctx.rect(area.x,area.y,area.w,area.h); ctx.clip();
+    ctx.drawImage(img, area.x+(area.w-dw)/2+state.ox, area.y+(area.h-dh)/2+state.oy, dw, dh);
+    wallLines(0.16);                                     // faint chart over the photo sells the wall
+    ctx.restore();
+  }
+  function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+  function fitText(text, font, maxW, startPx){
+    let px = startPx;
+    do { ctx.font = font.replace("{px}", px); px -= 4; } while (ctx.measureText(text).width > maxW && px > 20);
+  }
+  function drawSign(){
+    const sw = 780, sh = 250, x = (W-sw)/2, y = H-210-sh-26;
+    ctx.save();
+    ctx.translate(x+sw/2, y+sh/2); ctx.rotate(-0.012); ctx.translate(-(x+sw/2), -(y+sh/2));
+    ctx.fillStyle = "rgba(0,0,0,.28)"; roundRect(x+8,y+10,sw,sh,10); ctx.fill();
+    const g = ctx.createLinearGradient(0,y,0,y+sh);
+    g.addColorStop(0,"#a6773f"); g.addColorStop(1,"#7a5230");
+    ctx.fillStyle = g; roundRect(x,y,sw,sh,10); ctx.fill();
+    ctx.lineWidth = 10; ctx.strokeStyle = "#4e3218"; roundRect(x,y,sw,sh,10); ctx.stroke();
+    ctx.fillStyle = "#f3ecda"; ctx.textAlign = "center";
+    ctx.font = "700 44px Oswald, sans-serif";
+    ctx.fillText("LAST CHANCE RANCH PRISON", x+sw/2, y+64);
+    ctx.font = "400 74px Anton, sans-serif";
+    ctx.fillText("ID# " + state.num, x+sw/2, y+142);
+    const nm = (state.name || "YOUR PET").toUpperCase();
+    fitText(nm, "400 {px}px Anton, sans-serif", sw-80, 78);
+    ctx.fillText(nm, x+sw/2, y+222);
+    ctx.restore();
+    ctx.textAlign = "left";
+  }
+  function drawStamp(){
+    ctx.save();
+    ctx.translate(W-250, 190); ctx.rotate(0.16);
+    ctx.globalAlpha = 0.92; ctx.strokeStyle = "#c4302b"; ctx.fillStyle = "#c4302b";
+    ctx.lineWidth = 8; roundRect(-190,-84,380,168,8); ctx.stroke();
+    ctx.lineWidth = 3; roundRect(-176,-70,352,140,6); ctx.stroke();
+    ctx.textAlign = "center";
+    ctx.font = "400 74px Anton, sans-serif"; ctx.fillText("WANTED", 0, -6);
+    ctx.font = "700 34px Oswald, sans-serif"; ctx.fillText("FOR A BETTER LIFE", 0, 44);
+    ctx.restore(); ctx.textAlign = "left";
+  }
+  function drawCharge(){
+    ctx.save();
+    ctx.translate(60, 96); ctx.rotate(-0.05);
+    const text = "CHARGE: " + state.charge.toUpperCase();
+    ctx.font = "34px 'Special Elite', monospace";
+    const w = ctx.measureText(text).width + 48;
+    ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(6,8,w,64);
+    ctx.fillStyle = "#f3ecda"; ctx.fillRect(0,0,w,64);
+    ctx.strokeStyle = "#1b1a17"; ctx.lineWidth = 4; ctx.strokeRect(0,0,w,64);
+    ctx.fillStyle = "#1b1a17"; ctx.font = "34px 'Special Elite', monospace";
+    ctx.fillText(text, 24, 43);
+    ctx.restore();
+  }
+  function drawFooter(){
+    ctx.fillStyle = "#1b1a17"; ctx.fillRect(0,H-90,W,90);
+    ctx.fillStyle = "#d9cdaf"; ctx.textAlign = "center";
+    ctx.font = "700 30px Oswald, sans-serif";
+    ctx.fillText("LASTCHANCERANCHSC.COM  ·  DEPARTMENT OF PAWCTIONS  ·  #GETBOOKED", W/2, H-34);
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#eae0c8"; ctx.fillRect(0,H-210,W,120);
+    ctx.fillStyle = "#1b1a17"; ctx.font = "36px 'Special Elite', monospace"; ctx.textAlign = "center";
+    ctx.fillText("Booked " + new Date().toLocaleDateString("en-US") + "  ·  All inmates innocent.", W/2, H-140);
+    ctx.textAlign = "left";
+  }
+  function placeholder(){
+    if (state.img) return;
+    ctx.save(); ctx.textAlign = "center";
+    ctx.fillStyle = "rgba(27,26,23,.5)";
+    ctx.font = "400 110px Anton, sans-serif"; ctx.fillText("?", W/2, 480);
+    ctx.font = "700 42px Oswald, sans-serif"; ctx.fillText("UPLOAD A PHOTO TO BOOK YOUR PET", W/2, 580);
+    ctx.restore();
+  }
+  function draw(){
+    drawWall(); drawPhoto(); placeholder(); drawCharge(); drawStamp(); drawSign(); drawFooter();
+    queueMicrotask(updateLink);
+  }
+  let linkBusy = false, linkDirty = false;
+  function updateLink(){
+    if (linkBusy) { linkDirty = true; return; }
+    linkBusy = true; linkDirty = false;
+    cv.toBlob(b => {
+      linkBusy = false;
+      if (linkDirty) updateLink();
+      if (!b) return;
+      const a = document.getElementById("download");
+      if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+      a.href = a.dataset.url = URL.createObjectURL(b);
+      const nm = (state.name || "inmate").toLowerCase().replace(/[^a-z0-9]+/g,"-");
+      a.download = nm + "-mugshot.png";
+    }, "image/png");
+  }
+
+  /* inputs */
+  document.getElementById("file").addEventListener("change", e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const img = new Image();
+    img.onload = () => { state.img = img; state.ox = 0; state.oy = 0; draw();
+      if (typeof gtag === "function") gtag("event","getbooked_photo"); };
+    img.src = URL.createObjectURL(f);
+    document.getElementById("filelabel").firstChild.textContent = "📷 " + f.name.slice(0,26) + " ✓ ";
+  });
+  document.getElementById("petname").addEventListener("input", e => { state.name = e.target.value; draw(); });
+  document.getElementById("zoom").addEventListener("input", e => { state.zoom = +e.target.value; draw(); });
+  document.getElementById("reroll").addEventListener("click", () => {
+    let c; do { c = CHARGES[Math.floor(Math.random()*CHARGES.length)]; } while (c === state.charge);
+    state.charge = c; document.getElementById("charge").textContent = c; draw();
+  });
+  document.getElementById("download").addEventListener("click", () => {
+    if (typeof gtag === "function") gtag("event","getbooked_download",{charge:state.charge});
+  });
+
+  /* drag to reposition (mouse + touch via pointer events) */
+  let dragging = null;
+  const scale = () => W / cv.getBoundingClientRect().width;
+  cv.addEventListener("pointerdown", e => { dragging = {x:e.clientX, y:e.clientY}; cv.setPointerCapture(e.pointerId); cv.classList.add("drag"); });
+  cv.addEventListener("pointermove", e => {
+    if (!dragging || !state.img) return;
+    const s = scale();
+    state.ox += (e.clientX - dragging.x) * s;
+    state.oy += (e.clientY - dragging.y) * s;
+    dragging = {x:e.clientX, y:e.clientY};
+    draw();
+  });
+  cv.addEventListener("pointerup", () => { dragging = null; cv.classList.remove("drag"); });
+
+  /* fonts must be ready before first draw, or the sign renders in fallback */
+  Promise.all([
+    document.fonts.load("400 74px Anton"),
+    document.fonts.load("700 44px Oswald"),
+    document.fonts.load("34px 'Special Elite'")
+  ]).then(draw).catch(draw);
+  draw();
+
+  /* ?demo=1 loads a sample so the page can be previewed/screenshotted with a photo */
+  if (new URLSearchParams(location.search).get("demo")) {
+    const img = new Image();
+    img.onload = () => { state.img = img; state.name = "Biscuit"; document.getElementById("petname").value = "Biscuit"; draw(); };
+    img.src = "img/dogs/blue.jpg";
+  }
+})();
+</script>
+</body>
+</html>
