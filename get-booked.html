@@ -350,7 +350,7 @@
       state.booked = true; draw();
       dlBtn.hidden = false;
       bookBtn.textContent = "📋 Booked ✓";
-      status.textContent = "⚖️ The court has ruled: " + state.charges[0] + " and " + state.charges[1] + ". Adjust if needed, then download!";
+      status.textContent = "⚖️ The court has ruled: " + state.charges[0] + " and " + state.charges[1] + ". Adjust if needed, then download!" + (state.cut ? "" : " (Heads up: background removal didn’t work on this device, so the full photo was used.)");
       if (typeof gtag === "function") gtag("event","getbooked_booked",{charge:state.charges[0]});
     };
     if (!fn){ finish(); return; }
