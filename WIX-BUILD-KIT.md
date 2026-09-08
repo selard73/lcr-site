@@ -80,7 +80,7 @@ Find a Dog (→ records app link) · Adopt · Foster · Volunteer · About · **
 
 social links: Facebook · TikTok · YouTube · Petfinder
 
-*Col 2 — Get involved:* Adoptable dogs · How to adopt · Foster a dog · Volunteer · Donate · Post Bail · Who's your pawtner in crime? (quiz)
+*Col 2 — Get involved:* Adoptable dogs · How to adopt · Foster a dog · Volunteer · Donate · Who's your pawtner in crime? (quiz)
 
 *Col 3 — Contact the Warden:* (803) 479-8408 · lastchanceranchofsc@gmail.com · Aiken, South Carolina · Visits by appointment
 
@@ -129,7 +129,7 @@ Security Snuggles Unit`, 4 cards:
 1. `01 · Adopt` / **Apply for Parole** — `Every dog here has already been through the hard part. Browse the inmates, read their files, and apply. We match carefully so it sticks — for good.` → Find a dog
 2. `02 · Foster` / **Run a Half Way House** — `Fostering saves lives twice: the dog on your couch, and the one who takes their kennel. Short-term, long-term, or foster-to-adopt — we cover food and vet care.` → Foster a dog
 3. `03 · Volunteer` / **Join the Yard Crew** — `Walking, bathing, transport, photos, events, social media — we're volunteer-run, and there's a job for every skill set (and every schedule).` → Volunteer
-4. `04 · Donate` / **Post Bail** — `Vet bills, food, and fence repairs don't pay themselves. Every dollar goes straight to the animals — no salaries, no overhead, no fancy office.` → Donate now (red)
+4. `04 · Donate` / **Stock the Commissary** — `Vet bills, food, and fence repairs don't pay themselves. Every dollar goes straight to the animals — no salaries, no overhead, no fancy office.` → Donate now (red)
 
 **Mission** — dark section (ink bg, paper text), `img/coat.jpg` left:
 
@@ -272,10 +272,10 @@ Contact list: email · phone/text · Facebook (message the page).
 
 ### DONATE  (`/donate`)
 
-SEO title: `Donate — Post Bail — Last Chance Ranch of South Carolina`
+SEO title: `Donate — Stock the Commissary — Last Chance Ranch of South Carolina`
 SEO description: `Support Last Chance Ranch of South Carolina, a no-kill dog and cat sanctuary in Aiken, SC. Donate by Cash App, sponsor a dog, or send wishlist items.`
 
-**Page header** (dark): eyebrow `DONATE`, H1 `Post bail`, lead
+**Page header** (dark): eyebrow `DONATE`, H1 `Stock the commissary`, lead
 `We're volunteer-run with no paid staff, so every dollar goes where it should: vet bills, food, medicine, and the fences that keep everyone safe. Whatever you can give, an inmate is grateful.`
 Button: **Give via Cash App** (red → Cash App link).
 
