@@ -24,11 +24,20 @@ tmpl   = (ROOT / "_partials/dog.html").read_text(encoding="utf-8")
 def partial(txt, root):
     return txt.replace("{ROOT}", root)
 
+def canonical_url(page: pathlib.Path) -> str:
+    if page.parent.name == "dogs":
+        return f"{SITE}/dogs/{page.name}"
+    if page.name == "index.html":
+        return f"{SITE}/"
+    return f"{SITE}/{page.name}"
+
 def inject(page: pathlib.Path):
     root = "../" if page.parent.name == "dogs" else ""
     t = page.read_text(encoding="utf-8")
     t2 = re.sub(r"<!--HEADER-->.*?<!--/HEADER-->", "<!--HEADER-->\n" + partial(header, root) + "\n<!--/HEADER-->", t, flags=re.S)
     t2 = re.sub(r"<!--FOOTER-->.*?<!--/FOOTER-->", "<!--FOOTER-->\n" + partial(footer, root) + "\n<!--/FOOTER-->", t2, flags=re.S)
+    if 'rel="canonical"' not in t2 and page.name not in SKIP_SEO:
+        t2 = t2.replace("</head>", f'<link rel="canonical" href="{canonical_url(page)}">\n</head>', 1)
     if t2 != t:
         page.write_text(t2, encoding="utf-8")
         print("updated", page.relative_to(ROOT))
@@ -63,18 +72,28 @@ def dog_page(d):
         out = out.replace(k, v)
     return out
 
+# pages that should stay out of search results and the sitemap
+# (404 + the scratch pages the OG share images are rendered from)
+SKIP_SEO = {"404.html", "og-src.html", "og-getbooked-src.html"}
+
 # generate dog pages
 for d in DOGS:
     p = ROOT / "dogs" / f"{d['key']}.html"
-    p.write_text(dog_page(d), encoding="utf-8")
+    out = dog_page(d)
+    if d.get("hidden"):
+        out = out.replace("</head>", '<meta name="robots" content="noindex">\n</head>', 1)
+    p.write_text(out, encoding="utf-8")
     print("wrote", p.relative_to(ROOT), "(hidden)" if d.get("hidden") else "")
 
 # inject header/footer everywhere
 for page in list(ROOT.glob("*.html")) + list((ROOT / "dogs").glob("*.html")):
     inject(page)
 
-# sitemap
-urls = [f"{SITE}/{p.name}" for p in ROOT.glob("*.html") if p.name != "404.html"] + [f"{SITE}/dogs/{d['key']}.html" for d in DOGS if not d.get("hidden")]
+# sitemap — homepage as /, no scratch/404 pages, and the dogs list page included
+urls = [f"{SITE}/" if p.name == "index.html" else f"{SITE}/{p.name}"
+        for p in sorted(ROOT.glob("*.html")) if p.name not in SKIP_SEO] \
+     + [f"{SITE}/dogs/index.html"] \
+     + [f"{SITE}/dogs/{d['key']}.html" for d in DOGS if not d.get("hidden")]
 (ROOT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
     "".join(f"  <url><loc>{u}</loc></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")
 print("done:", len(DOGS), "dogs")
