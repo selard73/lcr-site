@@ -3,7 +3,7 @@
 Everything below is either a guess written in their voice, or a known gap. Nothing here blocks launch.
 
 ## Facts to verify
-- [ ] **Phone & email.** Site uses (803) 479-8408 / lastchanceranchofsc@gmail.com (from the FB series). Their Petfinder page lists (610) 842-5022 / ndreilly@verizon.net, and a Krispy Kreme flyer showed an (803) 867-xxxx number. Which one should be public?
+- [ ] **Phone & email.** Site uses (803) 479-8408 / lastchanceranchsc@gmail.com (email changed from lastchanceranchofsc@ on 2026-09-20 per the Warden). Their Petfinder page lists (610) 842-5022 / ndreilly@verizon.net, and a Krispy Kreme flyer showed an (803) 867-xxxx number. Which one should be public?
 - [ ] **501(c)(3) status / EIN** — donate page currently says "ask us about tax-deductibility"; if they're a registered nonprofit, add "tax-deductible" + EIN.
 - [ ] **Adoption fee(s)** — FAQ says "varies by dog, ask us." Add real numbers if they have them.
 - [ ] **Founding year, founder name(s), how many animals on site** — About page avoids numbers on purpose.

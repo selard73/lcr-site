@@ -132,6 +132,6 @@ window.LCR = {
   // The rescue's own animal records — the live source for adoptable dogs.
   dogsFeed: "https://lcr-animal-records.onrender.com/api/public/dogs",
   phone: "(803) 479-8408",
-  email: "lastchanceranchofsc@gmail.com",
+  email: "lastchanceranchsc@gmail.com",
   city: "Aiken, SC"
 };

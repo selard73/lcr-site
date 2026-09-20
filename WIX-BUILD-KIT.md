@@ -82,7 +82,7 @@ social links: Facebook · TikTok · YouTube · Petfinder
 
 *Col 2 — Get involved:* Adoptable dogs · How to adopt · Foster a dog · Volunteer · Donate · Who's your pawtner in crime? (quiz)
 
-*Col 3 — Contact the Warden:* (803) 479-8408 · lastchanceranchofsc@gmail.com · Aiken, South Carolina · Visits by appointment
+*Col 3 — Contact the Warden:* (803) 479-8408 · lastchanceranchsc@gmail.com · Aiken, South Carolina · Visits by appointment
 
 *Bottom line:* © 2026 Last Chance Ranch of South Carolina. All inmates innocent. · Site by Shannon Lard (link shannonlard.com)
 
@@ -100,7 +100,7 @@ social links: Facebook · TikTok · YouTube · Petfinder
 | Petfinder | https://www.petfinder.com/member/us/sc/aiken/last-chance-ranch-of-south-carolina-sc10004/ |
 | Quiz | https://pawtner-in-crime.onrender.com |
 | Phone | (803) 479-8408 — **unconfirmed, see §9** |
-| Email | lastchanceranchofsc@gmail.com |
+| Email | lastchanceranchsc@gmail.com |
 
 ## 5. Images to upload to Wix Media
 
@@ -324,7 +324,7 @@ SEO description: `About Last Chance Ranch of South Carolina — a no-kill dog an
 **Contact** (anchor `contact`) — eyebrow `CONTACT`, H2 `Reach the Warden`:
 
 - **Phone / text** — (803) 479-8408
-- **Email** — lastchanceranchofsc@gmail.com
+- **Email** — lastchanceranchsc@gmail.com
 - **Facebook** — Last Chance Ranch of SC — fastest way to reach us
 - **TikTok** — @last.chance.ranch03
 - **YouTube** — Last Chance Ranch of SC

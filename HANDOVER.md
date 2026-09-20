@@ -48,7 +48,7 @@ developer needs to know. Written 2026-09-05.
 2. **Render**: either convert to a Render Team with an LCR owner, or store the
    account credentials with the ranch. At minimum: connect the transferred
    GitHub repos so deploys keep working.
-3. **JotForm**: add lastchanceranchofsc@gmail.com as a notification recipient
+3. **JotForm**: add lastchanceranchsc@gmail.com as a notification recipient
    on the sponsorship form, and store the account credentials with the ranch.
 4. **Google Analytics**: Admin → Property access → add an LCR Google account
    as administrator.
