@@ -65,6 +65,10 @@
   }
 
   const visible = () => (window.DOGS || []).filter(d => !d.hidden);
+  /* speaker icons for the popup's sound toggle (stroke = currentColor) */
+  const SPEAKER = `<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" stroke="none"/>`;
+  const SPEAKER_OFF = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">${SPEAKER}<path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>`;
+  const SPEAKER_ON = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">${SPEAKER}<path d="M15.5 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11"/></svg>`;
   const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   const meta = d => [d.age, d.weight, d.sex].filter(v => v && !/^tbd$/i.test(v)).map(v => v.replace(/^(neutered|spayed) /i, "")).join(" / ");
 
@@ -154,14 +158,18 @@
         wrap.setAttribute("aria-modal", "true");
         wrap.setAttribute("aria-label", a.heading);
         /* Flyer mode: the image IS the modal — big and glossy, minimal chrome.
-           Sound (voice + music bed) starts on tap; browsers forbid audio autoplay. */
+           Sound (music, plus the voice when there is one) is a small speaker
+           toggle in the top-left corner, opposite the ✕. It starts muted:
+           browsers forbid audio autoplay, so a tap turns it on. */
         const hasSound = !!(a.voice || a.music);
+        const soundBtn = hasSound
+          ? `<button class="promo-sound" type="button" aria-pressed="false" aria-label="Turn sound on" title="Turn sound on">${SPEAKER_OFF}</button>` : "";
         let inner;
         if (a.image) {
           inner = `<div class="promo-ad">
             <button class="promo-x" aria-label="Close">✕</button>
+            ${soundBtn}
             <img class="promo-poster" src="${esc(a.image)}" alt="${esc(a.heading || "Announcement from Last Chance Ranch")}">
-            ${hasSound ? `<button class="promo-play"><span>▶</span> Hear the announcement</button>` : ""}
             <div class="promo-bar">
               ${a.link_url ? `<a class="btn red" href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_label || "Learn more")}</a>` : ""}
               <button class="btn ${a.link_url ? "ghost" : "red"} promo-later">${a.link_url ? "Maybe later" : "Got it"}</button>
@@ -175,11 +183,11 @@
           }
           inner = `<div class="promo-card ${media ? "has-media" : ""}">
             <button class="promo-x" aria-label="Close">✕</button>
+            ${soundBtn}
             ${media}
             <p class="eyebrow">From the Warden's office</p>
             ${a.heading ? `<h2>${esc(a.heading)}</h2>` : ""}
             ${a.message ? `<p class="promo-msg">${esc(a.message)}</p>` : ""}
-            ${hasSound ? `<div class="btns center" style="margin-bottom:14px"><button class="btn ghost promo-play"><span>▶</span> Hear the announcement</button></div>` : ""}
             <div class="btns center">
               ${a.link_url ? `<a class="btn red" href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_label || "Learn more")}</a>` : ""}
               <button class="btn ghost promo-later">${a.link_url ? "Maybe later" : "Got it"}</button>
@@ -187,35 +195,48 @@
           </div>`;
         }
         wrap.innerHTML = inner;
-        /* tap-to-play: voice at full volume, music quietly underneath, looped */
-        let voiceEl = null, musicEl = null, playing = false;
-        const playBtn = wrap.querySelector(".promo-play");
-        if (playBtn) playBtn.addEventListener("click", () => {
-          if (playing) {
-            voiceEl && voiceEl.pause(); musicEl && musicEl.pause();
-            playing = false; playBtn.innerHTML = "<span>▶</span> Hear the announcement";
-            return;
-          }
+        /* Speaker toggle: on = music (looped) with the voice on top at full volume
+           when there is one; off = everything stops. After a voice finishes, the
+           music fades out and the speaker goes back to off. */
+        let voiceEl = null, musicEl = null, playing = false, fade = null;
+        const soundEl = wrap.querySelector(".promo-sound");
+        const showSound = on => {
+          playing = on;
+          if (!soundEl) return;
+          soundEl.innerHTML = on ? SPEAKER_ON : SPEAKER_OFF;
+          soundEl.setAttribute("aria-pressed", String(on));
+          const label = on ? "Turn sound off" : "Turn sound on";
+          soundEl.setAttribute("aria-label", label);
+          soundEl.title = label;
+        };
+        const stopSound = () => {
+          clearInterval(fade);
+          voiceEl && voiceEl.pause(); musicEl && musicEl.pause();
+          showSound(false);
+        };
+        if (soundEl) soundEl.addEventListener("click", () => {
+          if (playing) return stopSound();
           if (a.voice && !voiceEl) {
             voiceEl = new Audio(a.voice);
             voiceEl.addEventListener("ended", () => {
               /* let the music breathe a beat after the voice, then fade it out */
-              if (!musicEl) { playing = false; playBtn.innerHTML = "<span>▶</span> Hear the announcement"; return; }
-              const fade = setInterval(() => {
+              if (!musicEl) return showSound(false);
+              fade = setInterval(() => {
                 musicEl.volume = Math.max(0, musicEl.volume - 0.05);
-                if (musicEl.volume <= 0) { clearInterval(fade); musicEl.pause(); playing = false; playBtn.innerHTML = "<span>▶</span> Hear the announcement"; }
+                if (musicEl.volume <= 0) stopSound();
               }, 150);
             });
           }
-          if (a.music && !musicEl) { musicEl = new Audio(a.music); musicEl.loop = true; musicEl.volume = a.voice ? 0.22 : 0.7; }
+          if (a.music && !musicEl) { musicEl = new Audio(a.music); musicEl.loop = true; }
+          if (musicEl) musicEl.volume = a.voice ? 0.22 : 0.7;   // back up after a fade-out
           voiceEl && voiceEl.play().catch(() => {});
           musicEl && musicEl.play().catch(() => {});
-          playing = true; playBtn.innerHTML = "<span>❚❚</span> Pause";
+          showSound(true);
           if (typeof gtag === "function") gtag("event", "promo_listen", { promo: a.heading || "flyer" });
         });
         const close = () => {
           try { localStorage.setItem("lcr_popup_seen", a.key); } catch { /* private mode */ }
-          voiceEl && voiceEl.pause(); musicEl && musicEl.pause();
+          stopSound();
           wrap.remove();
           document.body.classList.remove("modal-open");
         };
