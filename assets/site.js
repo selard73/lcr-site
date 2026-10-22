@@ -20,7 +20,7 @@
      the dog cards are painted in later from the records feed — so listen once on
      the document rather than binding per element. */
   var INTENT = { apply: "apply_click", foster: "foster_click", donate: "donate_click", paypal: "donate_click", quiz: "quiz_click" };
-  var SOCIAL = { facebook: 1, tiktok: 1, youtube: 1, petfinder: 1 };
+  var SOCIAL = { facebook: 1, tiktok: 1, adoptapet: 1, petfinder: 1 };
 
   document.addEventListener("click", function (e) {
     var a = e.target && e.target.closest && e.target.closest("a");
@@ -80,18 +80,23 @@
   };
 
   /* A card built from the records app's feed. Those dogs live in the app, so the
-     card links there rather than to a static profile page. */
+     card links there rather than to a static profile page. Adopted dogs keep
+     their card: a big PAROLED stamp across the photo and "Adopted Oct 22, 2026"
+     (the feed's status_label) where the footage line would be. */
   const liveCard = function(d){
+    const paroled = d.status === "adopted";
     const num  = d.inmate_number ? `<span class="num">Inmate #${esc(d.inmate_number)}</span>` : "";
-    const flag = d.status_label && d.status_label !== "Available"
-      ? `<span class="stamp sm flag">${esc(d.status_label)}</span>` : "";
+    const flag = paroled
+      ? `<span class="stamp paroled">Paroled</span>`
+      : (d.status_label && d.status_label !== "Available" ? `<span class="stamp sm flag">${esc(d.status_label)}</span>` : "");
     const pic  = d.photo
       ? `<img src="${esc(d.photo.url)}" alt="${esc(d.name)}" loading="lazy" onerror="this.remove()">` : "";
-    const vid  = d.has_video ? `<p class="blurb">▶ Yard-time footage on file</p>` : "";
-    return `<a class="dog" href="${esc(d.url)}">
+    const line = paroled ? `<p class="blurb adopted">${esc(d.status_label)}</p>`
+      : (d.has_video ? `<p class="blurb">▶ Yard-time footage on file</p>` : "");
+    return `<a class="dog${paroled ? " is-paroled" : ""}" href="${esc(d.url)}">
       <div class="pic"><span class="ph">?</span>${pic}${num}${flag}</div>
       <div class="body"><h3>${esc(d.name)}</h3><div class="meta">${esc(d.summary || "")}</div>
-      ${vid}<span class="btn sm">Meet ${esc(d.name)}</span></div></a>`;
+      ${line}<span class="btn sm">Meet ${esc(d.name)}</span></div></a>`;
   };
 
   /* The animal records are the only roster we show. Never seed these from the
@@ -111,9 +116,12 @@
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(data => {
         const dogs = (data.dogs || []).filter(d => d.photo);
-        if (!dogs.length) throw new Error("empty");
+        /* Adopted dogs stay on the Find a Dog page, after everyone still waiting.
+           The homepage strip is "awaiting parole", so it shows only the waiting. */
+        const paroled = (data.paroled || []).filter(d => d.photo);
+        if (!dogs.length && !paroled.length) throw new Error("empty");
         if (grid) {
-          grid.innerHTML = dogs.map(liveCard).join("");
+          grid.innerHTML = dogs.concat(paroled).map(liveCard).join("");
           const c = $("#dogcount"); if (c) c.textContent = dogs.length;
         }
         if (prev) prev.innerHTML = dogs.slice(0, +prev.dataset.n || 4).map(liveCard).join("");

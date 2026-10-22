@@ -126,7 +126,7 @@ window.LCR = {
   paypal: "https://paypal.me/LastChanceRanchSC",
   facebook: "https://www.facebook.com/profile.php?id=61582497165034",
   tiktok: "https://www.tiktok.com/@last.chance.ranch03",
-  youtube: "https://www.youtube.com/@LastChanceRanchofSC",
+  adoptapet: "https://www.adoptapet.com/shelter/297699#available-pets",
   petfinder: "https://www.petfinder.com/member/us/sc/aiken/last-chance-ranch-of-south-carolina-sc10004/",
   quiz: "https://pawtner-in-crime.onrender.com",
   // The rescue's own animal records — the live source for adoptable dogs.

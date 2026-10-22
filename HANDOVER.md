@@ -12,7 +12,10 @@ developer needs to know. Written 2026-09-05.
 - **Deploy = `git push` to `main`.** Render auto-deploys in ~30 seconds.
 - Dog data on the site comes **live from the records app**
   (`https://lcr-animal-records.onrender.com/api/public/dogs`) — the site never
-  stores its own roster, so it can't show an adopted dog. The homepage popup
+  stores its own roster, so it never shows a stale one. Adopted dogs come in the
+  feed's `paroled` list and stay on Find a Dog (after the waiting dogs) with a
+  PAROLED stamp and "Adopted <date>"; the homepage strip and the sponsor page
+  read only `dogs`, the ones still waiting. The homepage popup
   comes from the same app (`/api/public/announcement`), edited by ranch staff.
 - Read `README.md` for the file map and editing how-tos, `CONTENT-TODO.md` for
   open content questions.
@@ -29,7 +32,7 @@ developer needs to know. Written 2026-09-05.
 | **Records app API keys** | Deepgram (voice), Anthropic (extraction agent) | Keys in Render env vars | The public website works WITHOUT these — only the staff voice features need them. A successor can create their own free/cheap keys and swap the env vars. |
 | **Sponsor form** | JotForm form 262473512720048 ("Inmate Sponsorship") | Shannon's personal JotForm (free) | Sponsor filings + the thank-you autoresponder live here; notification email goes to Shannon. To move: create any new JotForm with the same 5 fields, update the form ID + field names at the top of the script in `sponsor.html`. The autoresponder HTML is saved at `docs/sponsor-autoresponder.html`. |
 | **Analytics** | Google Analytics property `G-Z8G3NMP20Q` | Shannon's Google account | Nice-to-have only. A successor can make a new GA property and change `GA_ID` at the top of `assets/site.js`. |
-| **Facebook / TikTok / YouTube / Idealist / Petfinder / Cash App / Chewy / Amazon** | — | **Last Chance Ranch / Grecia** | Already theirs. The site only links to them (all links live in `window.LCR` at the bottom of `assets/dogs.js`). |
+| **Facebook / TikTok / Adopt-a-Pet / Idealist / Petfinder / Cash App / Chewy / Amazon** | — | **Last Chance Ranch / Grecia** | Already theirs. The site only links to them (all links live in `window.LCR` at the bottom of `assets/dogs.js`). |
 
 ## What ranch staff can already do without any developer
 

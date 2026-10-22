@@ -156,6 +156,11 @@ section.tight{padding:40px 0}
    on its own hover — the card's lift is the only feedback we want. */
 .dog .btn:hover{background:var(--ink); border-color:var(--ink); color:#fff; transform:none}
 .dog.paired .pic{background:var(--paper-deep)}
+/* Adopted: the PAROLED rubber stamp slammed across the mugshot — low, over the chest and name sign, so the face stays visible */
+.dog .paroled{position:absolute; z-index:2; left:50%; top:72%; transform:translate(-50%,-50%) rotate(-14deg);
+  font-size:2.6rem; padding:6px 14px 4px; border-width:6px; background:rgba(243,236,218,.86); mix-blend-mode:normal; opacity:1;
+  box-shadow:0 2px 12px rgba(27,26,23,.25); white-space:nowrap; pointer-events:none}
+.dog .blurb.adopted{font-family:var(--cond); font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--red-deep); font-size:.9rem}
 
 /* ---------- dog profile ---------- */
 .profile{display:grid; grid-template-columns:minmax(260px,420px) 1fr; gap:44px; align-items:start}
