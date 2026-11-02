@@ -16,7 +16,7 @@
      notes    paragraphs — Warden's Notes (HTML allowed)
      conditions  parole conditions (one line)
      history / medical  optional paragraphs (HTML allowed) — accordions
-     petfinder  optional link
+     adoptapet  optional link
      hidden   true → not shown anywhere (adopted, on hold, unconfirmed)
      pair     {num, name} → bonded pair, must be adopted together
    ============================================================ */
@@ -31,7 +31,7 @@ window.DOGS = [
       "Blue is serving time for circumstances beyond his control. He has proven to be a model inmate — <strong>very social, friendly with people and dogs</strong>, and a full-tilt believer that every yard time is the best day of his life. He runs like he's being paid per lap.",
       "He's ready for early release into a committed home with <strong>structure, exercise</strong>, and a couch he's technically not allowed on. <span class='rec'>(PAROLE) is recommended.</span>"],
     conditions:"An approved adopter willing to provide structure, exercise, and a lifelong commitment.",
-    petfinder:"https://www.petfinder.com/member/us/sc/aiken/last-chance-ranch-of-south-carolina-sc10004/" },
+    adoptapet:"https://www.adoptapet.com/shelter/297699#available-pets" },
 
   { key:"isaiah", num:"35", name:"Isaiah", aka:"", rank:"Snuggle Officer",
     blurb:"A smooth operator whose cuddle skills should honestly require a permit.",
@@ -43,7 +43,7 @@ window.DOGS = [
       "He is <strong>friendly with people, friendly with dogs</strong>, and merely <em>interested</em> in cats, which around here counts as restraint. Assigned rank: <strong>Snuggle Officer.</strong> He takes the title seriously.",
       "Isaiah is ready for parole into a loving forever home. <span class='rec'>(PAROLE) is highly recommended.</span>"],
     conditions:"An approved adopter willing to provide structure, exercise, treats, and a lifelong commitment.",
-    petfinder:"https://www.petfinder.com/dog/isaiah-9b60422f-254a-4c12-821f-5e2764afc673/sc/aiken/last-chance-ranch-of-south-carolina-sc10004/details/" },
+    adoptapet:"https://www.adoptapet.com/shelter/297699#available-pets" },
 
   { key:"oatmeal", num:"39", name:"Oatmeal", aka:"", rank:"Door Greeter, First Class",
     blurb:"Good with cats, good with dogs, great with doors. Waiting since May 2024.",
@@ -102,7 +102,7 @@ window.DOGS = [
       "The Warden's file is clear on her terms: Princess needs to be the <strong>ONLY animal</strong> in the home, and <strong>no small children</strong>. Not out of malice — out of policy. She wants her own kingdom. In exchange she offers a subject who <strong>knows her basic commands, walks beautifully on a leash</strong>, and will accept snacks as tribute at any hour.",
       "She's looking for <strong>a quiet, snack-filled home where she can be your one and only.</strong> <span class='rec'>(PAROLE) is recommended</span> for an adopter ready to serve a queen."],
     conditions:"Only animal in the home. No small children. A quiet kingdom and a well-stocked snack drawer.",
-    petfinder:"https://www.petfinder.com/dog/princess-aka-trophy-e36836dc-6534-4910-a3e9-5a9cd5e692eb/sc/aiken/last-chance-ranch-of-south-carolina-sc10004/details/" },
+    adoptapet:"https://www.adoptapet.com/shelter/297699#available-pets" },
 
   { key:"lizzy", num:"8", name:"Lizzy", aka:"Lizzie", rank:"H-Block Veteran · The Family Business", hidden:true,
     pair:{ num:"9", name:"Thumper" },
@@ -127,7 +127,6 @@ window.LCR = {
   facebook: "https://www.facebook.com/profile.php?id=61582497165034",
   tiktok: "https://www.tiktok.com/@last.chance.ranch03",
   adoptapet: "https://www.adoptapet.com/shelter/297699#available-pets",
-  petfinder: "https://www.petfinder.com/member/us/sc/aiken/last-chance-ranch-of-south-carolina-sc10004/",
   quiz: "https://pawtner-in-crime.onrender.com",
   // The rescue's own animal records — the live source for adoptable dogs.
   dogsFeed: "https://lcr-animal-records.onrender.com/api/public/dogs",

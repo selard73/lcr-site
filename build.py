@@ -58,14 +58,14 @@ def dog_page(d):
     if d.get("history"): accs += f'<details class="acc"><summary>History</summary><div class="in"><p>{d["history"]}</p></div></details>'
     if d.get("medical"): accs += f'<details class="acc"><summary>Medical record</summary><div class="in"><p>{d["medical"]}</p></div></details>'
     else: accs += '<details class="acc"><summary>Medical record</summary><div class="in"><p>All Last Chance Ranch dogs are vetted before adoption — spayed/neutered, up to date on vaccines, and heartworm tested. Ask us for this dog’s full medical file.</p></div></details>'
-    pf = f'<a class="btn ghost" href="{e(d["petfinder"])}" target="_blank" rel="noopener">View on Petfinder</a>' if d.get("petfinder") else ""
+    aap = f'<a class="btn ghost" href="{e(d["adoptapet"])}" target="_blank" rel="noopener">View on Adopt-a-Pet</a>' if d.get("adoptapet") else ""
     stamp = "Bonded pair" if pair else ("Wanted for a better life" if d.get("status", "Available") == "Available" else d["status"])
     desc = re.sub(r"<[^>]+>", "", d.get("blurb") or "")
     out = tmpl
     for k, v in {
         "{TITLE}": e(title), "{NUM}": e(num), "{AKA}": (f'a.k.a. “{e(d["aka"])}”' if d.get("aka") else ""),
         "{RANK}": e(d.get("rank", "")), "{KEY}": d["key"], "{FACTS}": facts_html, "{REPORT}": report,
-        "{NOTES}": notes, "{CONDITIONS}": e(d.get("conditions", "")), "{ACCORDIONS}": accs, "{PETFINDER}": pf,
+        "{NOTES}": notes, "{CONDITIONS}": e(d.get("conditions", "")), "{ACCORDIONS}": accs, "{ADOPTAPET}": aap,
         "{STAMP}": e(stamp), "{DESC}": e(desc), "{SITE}": SITE, "{NAME}": e(d["name"]),
         "{PAIRNOTE}": (f'<p class="callout"><strong>{e(d["name"])} and {e(pair["name"])} are a bonded pair and must be adopted together.</strong></p>' if pair else ""),
     }.items():
