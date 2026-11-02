@@ -146,7 +146,10 @@ section.tight{padding:40px 0}
 .dog .num,.dog .flag{z-index:2}
 .dog .pic .ph{position:absolute; inset:0; display:grid; place-items:center; font-family:var(--disp); font-size:3rem; color:var(--red)}
 .dog .num{position:absolute; top:10px; left:10px; background:var(--paper-light); border:2px solid var(--ink); font-family:var(--cond); font-weight:700; font-size:.75rem; letter-spacing:.1em; padding:3px 7px; text-transform:uppercase}
-.dog .flag{position:absolute; top:10px; right:-6px; transform:rotate(6deg)}
+/* Status stamp on a photo: solid and bright, no multiply blend, so it holds up on dark mugshots and on phones */
+.dog .pic{container-type:inline-size}
+.dog .flag{position:absolute; top:10px; right:3px; transform:rotate(6deg); font-size:1.1rem; font-size:clamp(.94rem,6.2cqw,1.3rem); padding:.35em .6em; border-width:5px; white-space:nowrap;
+  color:#D90F0F; border-color:#D90F0F; mix-blend-mode:normal; opacity:1}
 .dog .body{padding:16px 18px 18px; display:flex; flex-direction:column; flex:1}
 .dog h3{font-size:1.5rem; margin:0 0 4px}
 .dog .meta{font-family:var(--type); font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:8px}
