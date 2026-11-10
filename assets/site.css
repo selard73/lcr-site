@@ -313,6 +313,9 @@ body.modal-open{overflow:hidden}
 @media (max-width:899px){
   .promo:has(.promo-ad){padding:14px 12px}
   .promo-ad .promo-bar{flex-direction:column; align-items:center; gap:10px; margin-top:12px}
-  .promo-ad .promo-poster{max-height:78vh; max-height:calc(100dvh - 104px)}
-  .promo-ad.has-link .promo-poster{max-height:70vh; max-height:calc(100dvh - 164px)}
+  /* 85% of the room available (her asks: full size was a little too big, three quarters a little too small) */
+  .promo-ad{max-width:81vw}
+  .promo-ad .promo-poster{max-height:66vh; max-height:calc((100dvh - 104px) * .85)}
+  .promo-ad.has-link .promo-poster{max-height:59vh; max-height:calc((100dvh - 164px) * .85)}
+  .promo-ad .promo-bar .btn{white-space:normal; max-width:100%}
 }
