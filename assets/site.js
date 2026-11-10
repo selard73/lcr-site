@@ -166,10 +166,14 @@
           ? `<button class="promo-sound" type="button" aria-pressed="false" aria-label="Turn sound on" title="Turn sound on">${SPEAKER_OFF}</button>` : "";
         let inner;
         if (a.image) {
-          inner = `<div class="promo-ad">
+          /* Two flyers: `image` is the phone one (tall); `image_desktop`, when the
+             Ranch uploaded one, replaces it on wide screens. */
+          const wide = a.image_desktop && a.image_desktop !== a.image
+            ? `<source media="(min-width:900px)" srcset="${esc(a.image_desktop)}">` : "";
+          inner = `<div class="promo-ad ${a.link_url ? "has-link" : ""}">
             <button class="promo-x" aria-label="Close">✕</button>
             ${soundBtn}
-            <img class="promo-poster" src="${esc(a.image)}" alt="${esc(a.heading || "Announcement from Last Chance Ranch")}">
+            <picture>${wide}<img class="promo-poster" src="${esc(a.image)}" alt="${esc(a.heading || "Announcement from Last Chance Ranch")}"></picture>
             <div class="promo-bar">
               ${a.link_url ? `<a class="btn red" href="${esc(a.link_url)}" target="_blank" rel="noopener">${esc(a.link_label || "Learn more")}</a>` : ""}
               <button class="btn ${a.link_url ? "ghost" : "red"} promo-later">${a.link_url ? "Maybe later" : "Got it"}</button>

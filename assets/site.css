@@ -293,8 +293,9 @@ body.modal-open{overflow:hidden}
 @media (prefers-reduced-motion:reduce){.promo{animation:none}}
 
 /* ---------- flyer-mode popup: the ad IS the modal ---------- */
-.promo-ad{position:relative; max-width:min(92vw,560px); text-align:center}
-.promo-poster{display:block; max-width:100%; max-height:76vh; object-fit:contain; margin:0 auto;
+/* The flyer grows until it nearly fills the screen; the subtracted height is the room the buttons under it need. */
+.promo-ad{position:relative; max-width:min(100%,820px); text-align:center}
+.promo-poster{display:block; max-width:100%; max-height:68vh; object-fit:contain; margin:0 auto;
   border:5px solid var(--paper-light); box-shadow:0 24px 70px rgba(0,0,0,.65); background:#000}
 .promo-ad .promo-x{top:-14px; right:-14px; box-shadow:0 4px 14px rgba(0,0,0,.5)}
 /* sound toggle: a small speaker in the top-left corner, the ✕'s twin; red while sound is on */
@@ -306,4 +307,12 @@ body.modal-open{overflow:hidden}
 .promo-bar{display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:16px}
 .promo-bar .btn.ghost{color:var(--paper-light); border-color:var(--paper-light)}
 .promo-bar .btn.ghost:hover{background:var(--paper-light); color:var(--ink); border-color:var(--paper-light)}
+.promo-ad .promo-bar{width:0; min-width:100%}   /* the buttons never make the box wider than the flyer, so the ✕ and speaker stay on its corners */
 @media (max-width:560px){ .promo-ad .promo-x{top:-10px; right:0} }
+/* phones: the buttons stack (link on top, "Maybe later" under it) and the flyer takes the rest of the screen */
+@media (max-width:899px){
+  .promo:has(.promo-ad){padding:14px 12px}
+  .promo-ad .promo-bar{flex-direction:column; align-items:center; gap:10px; margin-top:12px}
+  .promo-ad .promo-poster{max-height:78vh; max-height:calc(100dvh - 104px)}
+  .promo-ad.has-link .promo-poster{max-height:70vh; max-height:calc(100dvh - 164px)}
+}
